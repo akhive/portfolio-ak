@@ -338,21 +338,11 @@ function Projects() {
   return (
     <section id="projects" className="relative py-24 lg:py-32">
       <div className="mx-auto max-w-7xl px-6">
-        <div className="mb-16 flex flex-col items-start justify-between gap-6 sm:flex-row sm:items-end">
-          <div className="max-w-2xl">
-            <p className="text-sm font-semibold uppercase tracking-widest text-primary">Projects</p>
-            <h2 className="mt-4 font-heading text-4xl font-bold tracking-tight text-foreground sm:text-5xl">
-              Things I built quietly.
-            </h2>
-          </div>
-          <a
-            href="https://github.com"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="inline-flex items-center gap-2 text-sm font-semibold text-primary transition-colors hover:text-primary/80"
-          >
-            <Github className="h-4 w-4" /> View all on GitHub
-          </a>
+        <div className="mb-16 max-w-2xl">
+          <p className="text-sm font-semibold uppercase tracking-widest text-primary">Projects</p>
+          <h2 className="mt-4 font-heading text-4xl font-bold tracking-tight text-foreground sm:text-5xl">
+            Things I built quietly.
+          </h2>
         </div>
 
         <div className="grid gap-8 md:grid-cols-2 lg:grid-cols-3">
