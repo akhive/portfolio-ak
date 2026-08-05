@@ -21,23 +21,23 @@ import {
 export const Route = createFileRoute("/")({
   head: () => ({
     meta: [
-      { title: "Alex Morgan | Full Stack Developer & UI Designer" },
+      { title: "Ajmal Khan" },
       {
         name: "description",
         content:
-          "Portfolio of Alex Morgan — a full stack developer and UI designer building clean, modern web experiences.",
+          "Personal page of Ajmal Khan — learner, builder, and accountant exploring technology one project at a time.",
       },
-      { property: "og:title", content: "Alex Morgan | Full Stack Developer & UI Designer" },
+      { property: "og:title", content: "Ajmal Khan" },
       {
         property: "og:description",
         content:
-          "Portfolio of Alex Morgan — a full stack developer and UI designer building clean, modern web experiences.",
+          "Personal page of Ajmal Khan — learner, builder, and accountant exploring technology one project at a time.",
       },
-      { name: "twitter:title", content: "Alex Morgan | Full Stack Developer & UI Designer" },
+      { name: "twitter:title", content: "Ajmal Khan" },
       {
         name: "twitter:description",
         content:
-          "Portfolio of Alex Morgan — a full stack developer and UI designer building clean, modern web experiences.",
+          "Personal page of Ajmal Khan — learner, builder, and accountant exploring technology one project at a time.",
       },
     ],
   }),
@@ -160,7 +160,7 @@ function Hero() {
               <span>Available for freelance work</span>
             </div>
             <h1 className="font-heading text-5xl font-bold leading-[1.1] tracking-tight sm:text-6xl lg:text-7xl">
-              Hi, I'm <span className="text-gradient">Alex Morgan</span>
+              Hi, I'm <span className="text-gradient">Ajmal Khan</span>
             </h1>
             <p className="max-w-xl text-lg leading-relaxed text-muted-foreground sm:text-xl">
               A full stack developer and UI designer crafting clean, modern, and high-performing web
@@ -470,7 +470,7 @@ function Footer() {
     <footer className="border-t border-border/50 py-8">
       <div className="mx-auto flex max-w-7xl flex-col items-center justify-between gap-4 px-6 sm:flex-row">
         <p className="text-sm text-muted-foreground">
-          © {new Date().getFullYear()} Alex Morgan. All rights reserved.
+          © {new Date().getFullYear()} Ajmal Khan. All rights reserved.
         </p>
         <div className="flex gap-6">
           {navLinks.map((link) => (
