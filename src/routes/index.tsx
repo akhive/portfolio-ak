@@ -232,38 +232,45 @@ function Hero() {
 function About() {
   return (
     <section id="about" className="relative py-24 lg:py-32">
-      <div className="mx-auto max-w-7xl px-6">
-        <div className="grid gap-16 lg:grid-cols-2 lg:gap-24">
-          <div>
-            <p className="text-sm font-semibold uppercase tracking-widest text-primary">About Me</p>
-            <h2 className="mt-4 font-heading text-4xl font-bold tracking-tight text-foreground sm:text-5xl">
-              Building digital products with purpose.
-            </h2>
-          </div>
-          <div className="space-y-6">
-            <p className="text-lg leading-relaxed text-muted-foreground">
-              I'm a developer and designer with a passion for creating web experiences that are
-              both beautiful and functional. Over the years, I've worked with startups and established
-              brands to bring ideas to life — from concept and design to deployment and growth.
-            </p>
-            <p className="text-lg leading-relaxed text-muted-foreground">
-              My approach combines technical depth with design sensibility. I care about performance,
-              accessibility, and the small details that make a product feel polished.
-            </p>
-            <div className="grid grid-cols-2 gap-6 pt-4 sm:grid-cols-4">
-              {[
-                { value: "7+", label: "Years exp." },
-                { value: "50+", label: "Projects" },
-                { value: "30+", label: "Clients" },
-                { value: "100%", label: "Commitment" },
-              ].map((stat) => (
-                <div key={stat.label} className="text-center lg:text-left">
-                  <p className="font-heading text-3xl font-bold text-foreground">{stat.value}</p>
-                  <p className="text-sm text-muted-foreground">{stat.label}</p>
-                </div>
-              ))}
-            </div>
-          </div>
+      <div className="mx-auto max-w-4xl px-6">
+        <p className="text-sm font-semibold uppercase tracking-widest text-primary">About Me</p>
+        <h2 className="mt-4 font-heading text-3xl font-bold leading-tight tracking-tight text-foreground sm:text-4xl lg:text-5xl">
+          If you came here looking for just an Accountant… you may not fully find me.
+        </h2>
+        <div className="mt-10 space-y-6 text-lg leading-relaxed text-muted-foreground">
+          <p>
+            Yes, I have spent five years working as an Accountant in Dubai. Numbers, reports, and
+            responsibilities — I know them well.
+          </p>
+          <p>
+            But this page is not about my profession. This is about me. The inner me.
+          </p>
+          <p>
+            I am a learner in a world that never stops changing. I watch, I absorb, I recreate — and
+            sometimes, I improve. Some may call it copying. I call it evolving.
+          </p>
+          <p>
+            In a time where technology shifts every day, I believe the real skill is not in knowing
+            one thing deeply, but in being willing to learn anything quickly.
+          </p>
+          <p>
+            I have touched many worlds — Python, Linux, Windows, Ubuntu, a little ethical hacking,
+            building websites, and creating small tools that make work lighter.
+          </p>
+          <p>
+            At my office, I built a Text Extractor and cheque printing formats, not because I was
+            asked to, but because I wanted the work to move faster, smoother, better. Most of it,
+            with the quiet help of AI.
+          </p>
+          <p>
+            I do not enjoy the noise of social media. I do not wish to live in front of cameras or
+            create videos. I prefer to stay behind the scenes — quietly simplifying, improving, and
+            building.
+          </p>
+          <p className="text-foreground">
+            This is not a professional profile. This is simply me… still learning, still adapting,
+            still becoming.
+          </p>
         </div>
       </div>
     </section>
