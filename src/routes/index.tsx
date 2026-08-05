@@ -2,9 +2,7 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import {
   ArrowDown,
   ArrowRight,
-  Code2,
   FileText,
-  Github,
   Globe,
   Layers,
   Layout,
