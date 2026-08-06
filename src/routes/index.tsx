@@ -4,7 +4,6 @@ import {
   ArrowRight,
   FileText,
   Globe,
-  Layers,
   Layout,
   Mail,
   Server,
@@ -13,6 +12,7 @@ import {
   Terminal,
   Zap,
 } from "lucide-react";
+import profileAsset from "@/assets/ajmal-profile.png.asset.json";
 
 const siteUrl = "https://akbuilts.com";
 
