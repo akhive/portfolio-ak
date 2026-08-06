@@ -256,44 +256,123 @@ function Hero() {
 
 function About() {
   return (
-    <section id="about" className="relative py-24 lg:py-32">
-      <div className="mx-auto max-w-4xl px-6">
-        <p className="text-sm font-semibold uppercase tracking-widest text-primary">About Me</p>
-        <h2 className="mt-4 font-heading text-3xl font-bold leading-tight tracking-tight text-foreground sm:text-4xl lg:text-5xl">
-          If you came here looking for just an Accountant… you may not fully find me.
-        </h2>
-        <div className="mt-10 space-y-6 text-lg leading-relaxed text-muted-foreground">
-          <p>
-            Yes, I have spent five years working as an Accountant in Dubai. Numbers, reports, and
-            responsibilities — I know them well.
-          </p>
-          <p>But this page is not about my profession. This is about me. The inner me.</p>
-          <p>
-            I am a learner in a world that never stops changing. I watch, I absorb, I recreate — and
-            sometimes, I improve. Some may call it copying. I call it evolving.
-          </p>
-          <p>
-            In a time where technology shifts every day, I believe the real skill is not in knowing
-            one thing deeply, but in being willing to learn anything quickly.
-          </p>
-          <p>
-            I have touched many worlds — Python, Linux, Windows, Ubuntu, a little ethical hacking,
-            building websites, and creating small tools that make work lighter.
-          </p>
-          <p>
-            At my office, I built a Text Extractor and cheque printing formats, not because I was
-            asked to, but because I wanted the work to move faster, smoother, better. Most of it,
-            with the quiet help of AI.
-          </p>
-          <p>
-            I do not enjoy the noise of social media. I do not wish to live in front of cameras or
-            create videos. I prefer to stay behind the scenes — quietly simplifying, improving, and
-            building.
-          </p>
-          <p className="text-foreground">
-            This is not a professional profile. This is simply me… still learning, still adapting,
-            still becoming.
-          </p>
+    <section id="about" className="relative overflow-hidden py-24 lg:py-32">
+      {/* Accountant ledger texture */}
+      <div className="pointer-events-none absolute inset-0 ledger-lines opacity-50" />
+      <div className="pointer-events-none absolute inset-y-0 left-0 w-px bg-gradient-to-b from-transparent via-primary/30 to-transparent" />
+
+      <div className="relative mx-auto max-w-7xl px-6">
+        <div className="grid gap-12 lg:grid-cols-12 lg:gap-16">
+          {/* Left: narrative */}
+          <div className="lg:col-span-7">
+            <p className="text-sm font-semibold uppercase tracking-widest text-primary">About Me</p>
+            <h2 className="mt-4 font-heading text-3xl font-bold leading-tight tracking-tight text-foreground sm:text-4xl lg:text-5xl">
+              If you came here looking for just an Accountant… you may not fully find me.
+            </h2>
+            <div className="mt-10 space-y-6 text-lg leading-relaxed text-muted-foreground">
+              <p>
+                Yes, I have spent five years working as an Accountant in Dubai. Numbers, reports,
+                and responsibilities — I know them well.
+              </p>
+              <p>But this page is not about my profession. This is about me. The inner me.</p>
+              <p>
+                I am a learner in a world that never stops changing. I watch, I absorb, I recreate —
+                and sometimes, I improve. Some may call it copying. I call it evolving.
+              </p>
+              <p>
+                In a time where technology shifts every day, I believe the real skill is not in
+                knowing one thing deeply, but in being willing to learn anything quickly.
+              </p>
+              <p>
+                I have touched many worlds — Python, Linux, Windows, Ubuntu, a little ethical
+                hacking, building websites, and creating small tools that make work lighter.
+              </p>
+              <p>
+                At my office, I built a Text Extractor and cheque printing formats, not because I
+                was asked to, but because I wanted the work to move faster, smoother, better. Most
+                of it, with the quiet help of AI.
+              </p>
+              <p>
+                I do not enjoy the noise of social media. I do not wish to live in front of cameras
+                or create videos. I prefer to stay behind the scenes — quietly simplifying,
+                improving, and building.
+              </p>
+              <p className="text-foreground">
+                This is not a professional profile. This is simply me… still learning, still
+                adapting, still becoming.
+              </p>
+            </div>
+          </div>
+
+          {/* Right: accountant identity card */}
+          <div className="lg:col-span-5">
+            <div className="sticky top-28 space-y-6">
+              <div className="rounded-2xl border border-border bg-card/80 p-6 shadow-xl backdrop-blur-sm glow-sm sm:p-8">
+                <div className="flex items-center gap-3">
+                  <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-primary/10">
+                    <FileText className="h-5 w-5 text-primary" />
+                  </div>
+                  <p className="text-sm font-semibold uppercase tracking-widest text-primary">
+                    From the Books
+                  </p>
+                </div>
+
+                <div className="mt-6 space-y-4">
+                  <div className="flex items-center justify-between border-b border-border/60 pb-3">
+                    <span className="text-sm text-muted-foreground">Role</span>
+                    <span className="font-medium text-foreground">Accountant</span>
+                  </div>
+                  <div className="flex items-center justify-between border-b border-border/60 pb-3">
+                    <span className="text-sm text-muted-foreground">Experience</span>
+                    <span className="font-medium text-foreground">5+ Years</span>
+                  </div>
+                  <div className="flex items-center justify-between border-b border-border/60 pb-3">
+                    <span className="text-sm text-muted-foreground">Location</span>
+                    <span className="font-medium text-foreground">Dubai</span>
+                  </div>
+                  <div className="flex items-center justify-between pb-1">
+                    <span className="text-sm text-muted-foreground">Focus</span>
+                    <span className="font-medium text-foreground">Reports & Automation</span>
+                  </div>
+                </div>
+
+                {/* Mini ledger visual */}
+                <div className="mt-8 rounded-xl border border-border bg-background/60 p-4">
+                  <div className="flex items-center justify-between border-b border-border/60 pb-2">
+                    <span className="text-xs font-medium uppercase tracking-wider text-muted-foreground">
+                      Assets
+                    </span>
+                    <span className="text-xs font-medium uppercase tracking-wider text-muted-foreground">
+                      Value
+                    </span>
+                  </div>
+                  <div className="mt-3 space-y-2 text-sm">
+                    <div className="flex items-center justify-between">
+                      <span className="text-muted-foreground">Curiosity</span>
+                      <span className="font-medium text-foreground">High</span>
+                    </div>
+                    <div className="flex items-center justify-between">
+                      <span className="text-muted-foreground">Adaptability</span>
+                      <span className="font-medium text-foreground">High</span>
+                    </div>
+                    <div className="flex items-center justify-between">
+                      <span className="text-muted-foreground">Problem Solving</span>
+                      <span className="font-medium text-foreground">Growing</span>
+                    </div>
+                  </div>
+                  <div className="mt-4 flex items-center justify-between border-t border-border/60 pt-3">
+                    <span className="text-sm font-medium text-foreground">Total</span>
+                    <span className="font-heading text-lg font-bold text-primary">Still Becoming</span>
+                  </div>
+                </div>
+
+                <p className="mt-6 text-sm italic leading-relaxed text-muted-foreground">
+                  “Every balance sheet has two sides. On one side: the accountant. On the other:
+                  the curious builder.”
+                </p>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
     </section>
