@@ -4,7 +4,6 @@ import {
   ArrowRight,
   FileText,
   Globe,
-  Layers,
   Layout,
   Mail,
   Server,
@@ -13,6 +12,7 @@ import {
   Terminal,
   Zap,
 } from "lucide-react";
+import profileAsset from "@/assets/ajmal-profile.png.asset.json";
 
 const siteUrl = "https://akbuilts.com";
 
@@ -237,13 +237,17 @@ function Hero() {
                 </div>
               </div>
 
-              {/* Central glow orb */}
+              {/* Profile photo */}
               <div className="absolute inset-0 flex items-center justify-center">
-                <div className="h-64 w-64 rounded-full bg-primary/10 blur-3xl" />
+                <div className="h-72 w-72 rounded-full bg-primary/10 blur-3xl" />
               </div>
               <div className="absolute inset-0 flex items-center justify-center">
-                <div className="flex h-40 w-40 items-center justify-center rounded-full border border-border bg-card/90 shadow-2xl glow">
-                  <Layers className="h-16 w-16 text-primary" />
+                <div className="relative h-56 w-56 overflow-hidden rounded-full border-2 border-border bg-card/90 p-2 shadow-2xl glow">
+                  <img
+                    src={profileAsset.url}
+                    alt="Ajmal Khan"
+                    className="h-full w-full rounded-full object-cover"
+                  />
                 </div>
               </div>
             </div>
