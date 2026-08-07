@@ -12,7 +12,7 @@ import {
   Terminal,
   Zap,
 } from "lucide-react";
-import profileAsset from "@/assets/ajmal-profile.png.asset.json";
+import profileAsset from "@/assets/ajmal-profile.jpg.asset.json";
 
 const siteUrl = "https://akbuilts.com";
 
