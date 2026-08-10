@@ -12,7 +12,7 @@ import {
   Terminal,
   Zap,
 } from "lucide-react";
-import profileAsset from "@/assets/ajmal-profile.jpg.asset.json";
+
 
 const siteUrl = "https://akbuilts.com";
 
@@ -244,7 +244,7 @@ function Hero() {
               <div className="absolute inset-0 flex items-center justify-center">
                 <div className="animate-float relative h-56 w-56 overflow-hidden rounded-full border-2 border-border bg-card/90 p-2 shadow-2xl glow">
                   <img
-                    src={profileAsset.url}
+                    src="/ajmal-profile.jpg"
                     alt="Ajmal Khan"
                     className="h-full w-full rounded-full object-cover"
                   />
