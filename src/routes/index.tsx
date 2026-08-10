@@ -415,7 +415,7 @@ function Projects() {
   return (
     <section id="projects" className="relative py-24 lg:py-32">
       <div className="mx-auto max-w-7xl px-6">
-        <div className="mb-16 max-w-2xl">
+        <div className="animate-fade-in-up mb-16 max-w-2xl">
           <p className="text-sm font-semibold uppercase tracking-widest text-primary">Projects</p>
           <h2 className="mt-4 font-heading text-4xl font-bold tracking-tight text-foreground sm:text-5xl">
             Things I built quietly.
@@ -423,11 +423,11 @@ function Projects() {
         </div>
 
         <div className="grid gap-8 md:grid-cols-2 lg:grid-cols-3">
-          {projects.map((project) => (
+          {projects.map((project, index) => (
             <article
               key={project.title}
-              className="group flex flex-col overflow-hidden rounded-2xl border border-border bg-card transition-all hover:-translate-y-1 hover:border-primary/30 hover:shadow-xl hover:shadow-primary/10"
-            >
+              className="animate-fade-in-up group flex flex-col overflow-hidden rounded-2xl border border-border bg-card transition-all hover:-translate-y-1 hover:border-primary/30 hover:shadow-xl hover:shadow-primary/10"
+              style={{ animationDelay: `${(index + 1) * 150}ms` }}
               <div className="relative aspect-[16/10] overflow-hidden bg-indigo-deep">
                 <div className="absolute inset-0 bg-gradient-to-br from-primary/20 to-indigo-mid/40" />
                 <div className="absolute inset-0 flex items-center justify-center">
