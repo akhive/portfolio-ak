@@ -179,18 +179,18 @@ function Hero() {
       <div className="relative mx-auto w-full max-w-7xl px-6 py-24 lg:py-32">
         <div className="grid items-center gap-12 lg:grid-cols-2 lg:gap-16">
           <div className="space-y-8">
-            <div className="inline-flex items-center gap-2 rounded-full border border-border bg-card/50 px-4 py-1.5 text-sm text-muted-foreground backdrop-blur-sm">
+            <div className="animate-fade-in-up inline-flex items-center gap-2 rounded-full border border-border bg-card/50 px-4 py-1.5 text-sm text-muted-foreground backdrop-blur-sm">
               <Sparkles className="h-4 w-4 text-primary" />
               <span>Accountant · Learner · Builder</span>
             </div>
-            <h1 className="font-heading text-5xl font-bold leading-[1.1] tracking-tight sm:text-6xl lg:text-7xl">
+            <h1 className="animate-fade-in-up animation-delay-100 font-heading text-5xl font-bold leading-[1.1] tracking-tight sm:text-6xl lg:text-7xl">
               Hi, I'm <span className="text-gradient">Ajmal Khan</span>
             </h1>
-            <p className="max-w-xl text-lg leading-relaxed text-muted-foreground sm:text-xl">
+            <p className="animate-fade-in-up animation-delay-200 max-w-xl text-lg leading-relaxed text-muted-foreground sm:text-xl">
               I spend my days with numbers, and my nights exploring code. I stay behind the scenes —
               quietly simplifying work with Python, Linux, small tools, and a little help from AI.
             </p>
-            <div className="flex flex-wrap gap-4">
+            <div className="animate-fade-in-up animation-delay-300 flex flex-wrap gap-4">
               <a
                 href="#projects"
                 className="inline-flex items-center gap-2 rounded-full bg-primary px-6 py-3 text-base font-semibold text-primary-foreground transition-all hover:bg-primary/90 hover:shadow-lg hover:shadow-primary/25"
@@ -209,7 +209,7 @@ function Hero() {
           <div className="relative hidden lg:block">
             <div className="relative mx-auto aspect-square max-w-lg">
               {/* Decorative code card */}
-              <div className="absolute -left-8 top-8 rounded-2xl border border-border bg-card/80 p-5 shadow-xl backdrop-blur-sm glow-sm">
+              <div className="animate-fade-in-up animation-delay-400 absolute -left-8 top-8 rounded-2xl border border-border bg-card/80 p-5 shadow-xl backdrop-blur-sm glow-sm">
                 <div className="flex items-center gap-2">
                   <div className="h-3 w-3 rounded-full bg-destructive" />
                   <div className="h-3 w-3 rounded-full bg-yellow-500" />
@@ -225,7 +225,7 @@ function Hero() {
               </div>
 
               {/* Decorative stats card */}
-              <div className="absolute -right-4 bottom-12 rounded-2xl border border-border bg-card/80 p-5 shadow-xl backdrop-blur-sm glow-sm">
+              <div className="animate-fade-in-up animation-delay-500 absolute -right-4 bottom-12 rounded-2xl border border-border bg-card/80 p-5 shadow-xl backdrop-blur-sm glow-sm">
                 <div className="flex items-center gap-3">
                   <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-primary/20">
                     <Globe className="h-6 w-6 text-primary" />
@@ -239,10 +239,10 @@ function Hero() {
 
               {/* Profile photo */}
               <div className="absolute inset-0 flex items-center justify-center">
-                <div className="h-72 w-72 rounded-full bg-primary/10 blur-3xl" />
+                <div className="animate-pulse-glow h-72 w-72 rounded-full bg-primary/10 blur-3xl" />
               </div>
               <div className="absolute inset-0 flex items-center justify-center">
-                <div className="relative h-56 w-56 overflow-hidden rounded-full border-2 border-border bg-card/90 p-2 shadow-2xl glow">
+                <div className="animate-float relative h-56 w-56 overflow-hidden rounded-full border-2 border-border bg-card/90 p-2 shadow-2xl glow">
                   <img
                     src={profileAsset.url}
                     alt="Ajmal Khan"
@@ -268,7 +268,7 @@ function About() {
       <div className="relative mx-auto max-w-7xl px-6">
         <div className="grid gap-12 lg:grid-cols-12 lg:gap-16">
           {/* Left: narrative */}
-          <div className="lg:col-span-7">
+          <div className="animate-fade-in-up lg:col-span-7">
             <p className="text-sm font-semibold uppercase tracking-widest text-primary">About Me</p>
             <h2 className="mt-4 font-heading text-3xl font-bold leading-tight tracking-tight text-foreground sm:text-4xl lg:text-5xl">
               If you came here looking for just an Accountant… you may not fully find me.
@@ -292,11 +292,6 @@ function About() {
                 hacking, building websites, and creating small tools that make work lighter.
               </p>
               <p>
-                At my office, I built a Text Extractor and cheque printing formats, not because I
-                was asked to, but because I wanted the work to move faster, smoother, better. Most
-                of it, with the quiet help of AI.
-              </p>
-              <p>
                 I do not enjoy the noise of social media. I do not wish to live in front of cameras
                 or create videos. I prefer to stay behind the scenes — quietly simplifying,
                 improving, and building.
@@ -309,7 +304,7 @@ function About() {
           </div>
 
           {/* Right: accountant identity card */}
-          <div className="lg:col-span-5">
+          <div className="animate-fade-in-up animation-delay-200 lg:col-span-5">
             <div className="sticky top-28 space-y-6">
               <div className="rounded-2xl border border-border bg-card/80 p-6 shadow-xl backdrop-blur-sm glow-sm sm:p-8">
                 <div className="flex items-center gap-3">
@@ -387,7 +382,7 @@ function Skills() {
   return (
     <section id="skills" className="relative border-y border-border/50 bg-card/30 py-24 lg:py-32">
       <div className="mx-auto max-w-7xl px-6">
-        <div className="mb-16 max-w-2xl">
+        <div className="animate-fade-in-up mb-16 max-w-2xl">
           <p className="text-sm font-semibold uppercase tracking-widest text-primary">Skills</p>
           <h2 className="mt-4 font-heading text-4xl font-bold tracking-tight text-foreground sm:text-5xl">
             Worlds I have touched.
@@ -397,10 +392,11 @@ function Skills() {
           </p>
         </div>
         <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-          {skills.map((skill) => (
+          {skills.map((skill, index) => (
             <div
               key={skill.title}
-              className="group rounded-2xl border border-border bg-card p-6 transition-all hover:-translate-y-1 hover:border-primary/30 hover:bg-accent hover:shadow-lg hover:shadow-primary/10"
+              className="animate-fade-in-up group rounded-2xl border border-border bg-card p-6 transition-all hover:-translate-y-1 hover:border-primary/30 hover:bg-accent hover:shadow-lg hover:shadow-primary/10"
+              style={{ animationDelay: `${(index + 1) * 100}ms` }}
             >
               <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-primary/10 transition-colors group-hover:bg-primary/20">
                 <skill.icon className="h-6 w-6 text-primary" />
@@ -419,7 +415,7 @@ function Projects() {
   return (
     <section id="projects" className="relative py-24 lg:py-32">
       <div className="mx-auto max-w-7xl px-6">
-        <div className="mb-16 max-w-2xl">
+        <div className="animate-fade-in-up mb-16 max-w-2xl">
           <p className="text-sm font-semibold uppercase tracking-widest text-primary">Projects</p>
           <h2 className="mt-4 font-heading text-4xl font-bold tracking-tight text-foreground sm:text-5xl">
             Things I built quietly.
@@ -427,10 +423,11 @@ function Projects() {
         </div>
 
         <div className="grid gap-8 md:grid-cols-2 lg:grid-cols-3">
-          {projects.map((project) => (
+          {projects.map((project, index) => (
             <article
               key={project.title}
-              className="group flex flex-col overflow-hidden rounded-2xl border border-border bg-card transition-all hover:-translate-y-1 hover:border-primary/30 hover:shadow-xl hover:shadow-primary/10"
+              className="animate-fade-in-up group flex flex-col overflow-hidden rounded-2xl border border-border bg-card transition-all hover:-translate-y-1 hover:border-primary/30 hover:shadow-xl hover:shadow-primary/10"
+              style={{ animationDelay: `${(index + 1) * 150}ms` }}
             >
               <div className="relative aspect-[16/10] overflow-hidden bg-indigo-deep">
                 <div className="absolute inset-0 bg-gradient-to-br from-primary/20 to-indigo-mid/40" />
@@ -477,7 +474,7 @@ function Contact() {
     <section id="contact" className="relative border-t border-border/50 bg-card/30 py-24 lg:py-32">
       <div className="mx-auto max-w-7xl px-6">
         <div className="grid gap-16 lg:grid-cols-2 lg:gap-24">
-          <div>
+          <div className="animate-fade-in-up">
             <p className="text-sm font-semibold uppercase tracking-widest text-primary">Contact</p>
             <h2 className="mt-4 font-heading text-4xl font-bold tracking-tight text-foreground sm:text-5xl">
               Say hello.
@@ -501,7 +498,7 @@ function Contact() {
             action="mailto:ajmalshajahan@gmail.com"
             method="post"
             encType="text/plain"
-            className="space-y-5 rounded-2xl border border-border bg-card p-6 shadow-xl sm:p-8"
+            className="animate-fade-in-up animation-delay-200 space-y-5 rounded-2xl border border-border bg-card p-6 shadow-xl sm:p-8"
           >
             <div className="grid gap-5 sm:grid-cols-2">
               <div className="space-y-2">
