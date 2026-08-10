@@ -92,11 +92,11 @@ const skills = [
 
 const projects = [
   {
-    title: "Text Extractor",
+    title: "Tax Invoice Extractor",
     description:
       "A tool I built at the office to pull text from documents and images, turning slow manual work into a few quick clicks.",
     tags: ["Python", "Automation", "AI"],
-    href: "#contact",
+    href: "https://text-extractor-sample.vercel.app",
   },
   {
     title: "Cheque Printing Format",
@@ -432,7 +432,7 @@ function Projects() {
               <div className="relative aspect-[16/10] overflow-hidden bg-indigo-deep">
                 <div className="absolute inset-0 bg-gradient-to-br from-primary/20 to-indigo-mid/40" />
                 <div className="absolute inset-0 flex items-center justify-center">
-                  {project.title === "Text Extractor" ? (
+                  {project.title === "Tax Invoice Extractor" ? (
                     <FileText className="h-12 w-12 text-primary/40" />
                   ) : project.title === "Cheque Printing Format" ? (
                     <Layout className="h-12 w-12 text-primary/40" />
@@ -456,6 +456,8 @@ function Projects() {
                 </div>
                 <a
                   href={project.href}
+                  target={project.href.startsWith("http") ? "_blank" : undefined}
+                  rel={project.href.startsWith("http") ? "noopener noreferrer" : undefined}
                   className="mt-6 inline-flex w-full items-center justify-center gap-2 rounded-lg border border-border bg-background px-4 py-2.5 text-sm font-semibold text-foreground transition-colors hover:border-primary/50 hover:bg-accent hover:text-foreground"
                 >
                   View Project <ArrowRight className="h-4 w-4" />
