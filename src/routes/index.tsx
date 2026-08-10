@@ -397,6 +397,7 @@ function Skills() {
               key={skill.title}
               className="animate-fade-in-up group rounded-2xl border border-border bg-card p-6 transition-all hover:-translate-y-1 hover:border-primary/30 hover:bg-accent hover:shadow-lg hover:shadow-primary/10"
               style={{ animationDelay: `${(index + 1) * 100}ms` }}
+            >
               <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-primary/10 transition-colors group-hover:bg-primary/20">
                 <skill.icon className="h-6 w-6 text-primary" />
               </div>
