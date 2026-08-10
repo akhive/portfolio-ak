@@ -474,7 +474,7 @@ function Contact() {
     <section id="contact" className="relative border-t border-border/50 bg-card/30 py-24 lg:py-32">
       <div className="mx-auto max-w-7xl px-6">
         <div className="grid gap-16 lg:grid-cols-2 lg:gap-24">
-          <div>
+          <div className="animate-fade-in-up">
             <p className="text-sm font-semibold uppercase tracking-widest text-primary">Contact</p>
             <h2 className="mt-4 font-heading text-4xl font-bold tracking-tight text-foreground sm:text-5xl">
               Say hello.
@@ -498,7 +498,7 @@ function Contact() {
             action="mailto:ajmalshajahan@gmail.com"
             method="post"
             encType="text/plain"
-            className="space-y-5 rounded-2xl border border-border bg-card p-6 shadow-xl sm:p-8"
+            className="animate-fade-in-up animation-delay-200 space-y-5 rounded-2xl border border-border bg-card p-6 shadow-xl sm:p-8"
           >
             <div className="grid gap-5 sm:grid-cols-2">
               <div className="space-y-2">
