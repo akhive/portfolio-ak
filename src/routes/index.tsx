@@ -428,6 +428,7 @@ function Projects() {
               key={project.title}
               className="animate-fade-in-up group flex flex-col overflow-hidden rounded-2xl border border-border bg-card transition-all hover:-translate-y-1 hover:border-primary/30 hover:shadow-xl hover:shadow-primary/10"
               style={{ animationDelay: `${(index + 1) * 150}ms` }}
+            >
               <div className="relative aspect-[16/10] overflow-hidden bg-indigo-deep">
                 <div className="absolute inset-0 bg-gradient-to-br from-primary/20 to-indigo-mid/40" />
                 <div className="absolute inset-0 flex items-center justify-center">
