@@ -179,18 +179,18 @@ function Hero() {
       <div className="relative mx-auto w-full max-w-7xl px-6 py-24 lg:py-32">
         <div className="grid items-center gap-12 lg:grid-cols-2 lg:gap-16">
           <div className="space-y-8">
-            <div className="inline-flex items-center gap-2 rounded-full border border-border bg-card/50 px-4 py-1.5 text-sm text-muted-foreground backdrop-blur-sm">
+            <div className="animate-fade-in-up inline-flex items-center gap-2 rounded-full border border-border bg-card/50 px-4 py-1.5 text-sm text-muted-foreground backdrop-blur-sm">
               <Sparkles className="h-4 w-4 text-primary" />
               <span>Accountant · Learner · Builder</span>
             </div>
-            <h1 className="font-heading text-5xl font-bold leading-[1.1] tracking-tight sm:text-6xl lg:text-7xl">
+            <h1 className="animate-fade-in-up animation-delay-100 font-heading text-5xl font-bold leading-[1.1] tracking-tight sm:text-6xl lg:text-7xl">
               Hi, I'm <span className="text-gradient">Ajmal Khan</span>
             </h1>
-            <p className="max-w-xl text-lg leading-relaxed text-muted-foreground sm:text-xl">
+            <p className="animate-fade-in-up animation-delay-200 max-w-xl text-lg leading-relaxed text-muted-foreground sm:text-xl">
               I spend my days with numbers, and my nights exploring code. I stay behind the scenes —
               quietly simplifying work with Python, Linux, small tools, and a little help from AI.
             </p>
-            <div className="flex flex-wrap gap-4">
+            <div className="animate-fade-in-up animation-delay-300 flex flex-wrap gap-4">
               <a
                 href="#projects"
                 className="inline-flex items-center gap-2 rounded-full bg-primary px-6 py-3 text-base font-semibold text-primary-foreground transition-all hover:bg-primary/90 hover:shadow-lg hover:shadow-primary/25"
@@ -209,7 +209,7 @@ function Hero() {
           <div className="relative hidden lg:block">
             <div className="relative mx-auto aspect-square max-w-lg">
               {/* Decorative code card */}
-              <div className="absolute -left-8 top-8 rounded-2xl border border-border bg-card/80 p-5 shadow-xl backdrop-blur-sm glow-sm">
+              <div className="animate-fade-in-up animation-delay-400 absolute -left-8 top-8 rounded-2xl border border-border bg-card/80 p-5 shadow-xl backdrop-blur-sm glow-sm">
                 <div className="flex items-center gap-2">
                   <div className="h-3 w-3 rounded-full bg-destructive" />
                   <div className="h-3 w-3 rounded-full bg-yellow-500" />
@@ -225,7 +225,7 @@ function Hero() {
               </div>
 
               {/* Decorative stats card */}
-              <div className="absolute -right-4 bottom-12 rounded-2xl border border-border bg-card/80 p-5 shadow-xl backdrop-blur-sm glow-sm">
+              <div className="animate-fade-in-up animation-delay-500 absolute -right-4 bottom-12 rounded-2xl border border-border bg-card/80 p-5 shadow-xl backdrop-blur-sm glow-sm">
                 <div className="flex items-center gap-3">
                   <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-primary/20">
                     <Globe className="h-6 w-6 text-primary" />
@@ -239,10 +239,10 @@ function Hero() {
 
               {/* Profile photo */}
               <div className="absolute inset-0 flex items-center justify-center">
-                <div className="h-72 w-72 rounded-full bg-primary/10 blur-3xl" />
+                <div className="animate-pulse-glow h-72 w-72 rounded-full bg-primary/10 blur-3xl" />
               </div>
               <div className="absolute inset-0 flex items-center justify-center">
-                <div className="relative h-56 w-56 overflow-hidden rounded-full border-2 border-border bg-card/90 p-2 shadow-2xl glow">
+                <div className="animate-float relative h-56 w-56 overflow-hidden rounded-full border-2 border-border bg-card/90 p-2 shadow-2xl glow">
                   <img
                     src={profileAsset.url}
                     alt="Ajmal Khan"
