@@ -268,7 +268,7 @@ function About() {
       <div className="relative mx-auto max-w-7xl px-6">
         <div className="grid gap-12 lg:grid-cols-12 lg:gap-16">
           {/* Left: narrative */}
-          <div className="lg:col-span-7">
+          <div className="animate-fade-in-up lg:col-span-7">
             <p className="text-sm font-semibold uppercase tracking-widest text-primary">About Me</p>
             <h2 className="mt-4 font-heading text-3xl font-bold leading-tight tracking-tight text-foreground sm:text-4xl lg:text-5xl">
               If you came here looking for just an Accountant… you may not fully find me.
@@ -304,7 +304,7 @@ function About() {
           </div>
 
           {/* Right: accountant identity card */}
-          <div className="lg:col-span-5">
+          <div className="animate-fade-in-up animation-delay-200 lg:col-span-5">
             <div className="sticky top-28 space-y-6">
               <div className="rounded-2xl border border-border bg-card/80 p-6 shadow-xl backdrop-blur-sm glow-sm sm:p-8">
                 <div className="flex items-center gap-3">
@@ -382,7 +382,7 @@ function Skills() {
   return (
     <section id="skills" className="relative border-y border-border/50 bg-card/30 py-24 lg:py-32">
       <div className="mx-auto max-w-7xl px-6">
-        <div className="mb-16 max-w-2xl">
+        <div className="animate-fade-in-up mb-16 max-w-2xl">
           <p className="text-sm font-semibold uppercase tracking-widest text-primary">Skills</p>
           <h2 className="mt-4 font-heading text-4xl font-bold tracking-tight text-foreground sm:text-5xl">
             Worlds I have touched.
@@ -392,11 +392,11 @@ function Skills() {
           </p>
         </div>
         <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-          {skills.map((skill) => (
+          {skills.map((skill, index) => (
             <div
               key={skill.title}
-              className="group rounded-2xl border border-border bg-card p-6 transition-all hover:-translate-y-1 hover:border-primary/30 hover:bg-accent hover:shadow-lg hover:shadow-primary/10"
-            >
+              className="animate-fade-in-up group rounded-2xl border border-border bg-card p-6 transition-all hover:-translate-y-1 hover:border-primary/30 hover:bg-accent hover:shadow-lg hover:shadow-primary/10"
+              style={{ animationDelay: `${(index + 1) * 100}ms` }}
               <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-primary/10 transition-colors group-hover:bg-primary/20">
                 <skill.icon className="h-6 w-6 text-primary" />
               </div>
