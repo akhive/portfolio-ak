@@ -292,11 +292,6 @@ function About() {
                 hacking, building websites, and creating small tools that make work lighter.
               </p>
               <p>
-                At my office, I built a Text Extractor and cheque printing formats, not because I
-                was asked to, but because I wanted the work to move faster, smoother, better. Most
-                of it, with the quiet help of AI.
-              </p>
-              <p>
                 I do not enjoy the noise of social media. I do not wish to live in front of cameras
                 or create videos. I prefer to stay behind the scenes — quietly simplifying,
                 improving, and building.
