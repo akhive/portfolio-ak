@@ -113,6 +113,13 @@ const projects = [
     tags: ["React", "Tailwind", "TanStack"],
     href: "https://akbuilts.com",
   },
+  {
+    title: "AutoKid",
+    description:
+      "A simple, playful tool to help kids learn vehicle names — built quietly, one idea at a time.",
+    tags: ["Education", "Web Tool", "Kids"],
+    href: "https://autokid.akbuilts.com",
+  },
 ];
 
 function Index() {
