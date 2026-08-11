@@ -444,6 +444,8 @@ function Projects() {
                     <FileText className="h-12 w-12 text-primary/40" />
                   ) : project.title === "Cheque Printing Format" ? (
                     <Layout className="h-12 w-12 text-primary/40" />
+                  ) : project.title === "AutoKid" ? (
+                    <Car className="h-12 w-12 text-primary/40" />
                   ) : (
                     <Globe className="h-12 w-12 text-primary/40" />
                   )}
