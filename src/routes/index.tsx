@@ -96,7 +96,7 @@ const projects = [
     description:
       "A tool I built at the office to pull text from documents and images, turning slow manual work into a few quick clicks.",
     tags: ["Python", "Automation", "AI"],
-    href: "https://text-extractor-sample.vercel.app",
+    href: "https://extractor.akbuilts.com",
   },
   {
     title: "Cheque Printing Format",
