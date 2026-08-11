@@ -2,6 +2,7 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import {
   ArrowDown,
   ArrowRight,
+  Car,
   FileText,
   Globe,
   Layout,
@@ -111,6 +112,13 @@ const projects = [
       "This site — a quiet corner of the internet to share who I am, what I learn, and what I build behind the scenes.",
     tags: ["React", "Tailwind", "TanStack"],
     href: "https://akbuilts.com",
+  },
+  {
+    title: "AutoKid",
+    description:
+      "A simple, playful tool to help kids learn vehicle names — built quietly, one idea at a time.",
+    tags: ["Education", "Web Tool", "Kids"],
+    href: "https://autokid.akbuilts.com",
   },
 ];
 
@@ -436,6 +444,8 @@ function Projects() {
                     <FileText className="h-12 w-12 text-primary/40" />
                   ) : project.title === "Cheque Printing Format" ? (
                     <Layout className="h-12 w-12 text-primary/40" />
+                  ) : project.title === "AutoKid" ? (
+                    <Car className="h-12 w-12 text-primary/40" />
                   ) : (
                     <Globe className="h-12 w-12 text-primary/40" />
                   )}
