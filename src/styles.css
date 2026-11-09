@@ -241,7 +241,7 @@ h2 { font-size:52px; line-height:1.13; font-weight:500; }
   .section-heading > p { margin-top:19px; font-size:12px; }
   .project-grid,.other-projects { grid-template-columns:1fr; gap:34px; }
   .project-visual { aspect-ratio:1.45; }
-  .invoice-visual { padding:43px 19px 21px; }
+  .invoice-visual { aspect-ratio:1.2; padding:43px 19px 21px; }
   .invoice-content { padding:15px; }
   .project-meta { font-size:7px; }
   .project h3 { font-size:23px; }
