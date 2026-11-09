@@ -1,590 +1,142 @@
-import { createFileRoute, Link } from "@tanstack/react-router";
-import {
-  ArrowDown,
-  ArrowRight,
-  Car,
-  FileText,
-  Globe,
-  Layout,
-  Mail,
-  Server,
-  Shield,
-  Sparkles,
-  Terminal,
-  Zap,
-} from "lucide-react";
+import { createFileRoute } from '@tanstack/react-router';
+import { useEffect, useRef, useState, type ReactNode, type FormEvent } from 'react';
+import { ArrowUpRight, ArrowDown, ArrowRight, Menu, X, Plus, Minus, Terminal, Globe, Cpu, Shield, Monitor, Sparkles, FileText, Check, Copy, Mail, MapPin } from 'lucide-react';
+import { Button } from '@/components/ui/button';
+import autoKidImage from '@/assets/autokid-vehicles.jpg';
 
-
-const siteUrl = "https://akbuilts.com";
-
-export const Route = createFileRoute("/")({
+export const Route = createFileRoute('/')({
   head: () => ({
     meta: [
-      { title: "Ajmal Khan — Learner, Builder, Accountant" },
-      {
-        name: "description",
-        content:
-          "Personal page of Ajmal Khan. Accountant by profession, learner by nature, builder by choice. Behind-the-scenes work with Python, Linux, web tools, and AI.",
-      },
-      { property: "og:title", content: "Ajmal Khan — Learner, Builder, Accountant" },
-      {
-        property: "og:description",
-        content:
-          "Personal page of Ajmal Khan. Accountant by profession, learner by nature, builder by choice.",
-      },
-      { property: "og:url", content: siteUrl },
-      { property: "og:type", content: "website" },
-      { name: "twitter:title", content: "Ajmal Khan — Learner, Builder, Accountant" },
-      {
-        name: "twitter:description",
-        content:
-          "Personal page of Ajmal Khan. Accountant by profession, learner by nature, builder by choice.",
-      },
+      { title: 'Ajmal Khan — Behind the numbers. Beyond the ordinary.' },
+      { name: 'description', content: 'Ajmal Khan: accountant in Dubai, curious learner, and quiet builder. Explore useful tools, everyday experiments, and the person behind akbuilts.com.' },
+      { property: 'og:title', content: 'Ajmal Khan — Accountant. Learner. Builder.' },
+      { property: 'og:description', content: 'Behind the numbers, a curious mind. A personal collection of tools, experiments, and things built quietly by Ajmal Khan.' },
+      { property: 'og:url', content: 'https://akbuilts.com' },
+      { property: 'og:type', content: 'website' },
+      { name: 'twitter:card', content: 'summary_large_image' },
     ],
-    links: [{ rel: "canonical", href: siteUrl }],
+    links: [{ rel: 'canonical', href: 'https://akbuilts.com' }],
   }),
   component: Index,
 });
 
-const navLinks = [
-  { label: "About", href: "#about" },
-  { label: "Skills", href: "#skills" },
-  { label: "Projects", href: "#projects" },
-  { label: "Contact", href: "#contact" },
-];
-
+const navigation = [ ['About', '#about'], ['Skills', '#skills'], ['Projects', '#projects'], ['Contact', '#contact'] ];
 const skills = [
-  {
-    icon: Terminal,
-    title: "Python",
-    description: "Scripting, automation, and small utilities that make repetitive work disappear.",
-  },
-  {
-    icon: Server,
-    title: "Linux & Ubuntu",
-    description: "Comfortable on the command line, from system setup to daily workflows.",
-  },
-  {
-    icon: Layout,
-    title: "Windows Systems",
-    description: "Years of hands-on experience with Windows tools, formats, and office workflows.",
-  },
-  {
-    icon: Globe,
-    title: "Web Building",
-    description: "Creating simple, useful websites and digital spaces like this one.",
-  },
-  {
-    icon: Zap,
-    title: "Automation & Tools",
-    description: "Building small tools that speed up real work — faster, smoother, better.",
-  },
-  {
-    icon: Sparkles,
-    title: "AI-Assisted Building",
-    description: "Using AI as a quiet partner to learn faster, code better, and ship sooner.",
-  },
-  {
-    icon: Shield,
-    title: "Ethical Hacking",
-    description: "A curious beginner's exploration of security, privacy, and how systems work.",
-  },
+  { icon: Terminal, title: 'Python', detail: 'Scripts, automation & useful little utilities', category: '01 / CODE' },
+  { icon: Monitor, title: 'Linux & Ubuntu', detail: 'Command lines, systems & everyday exploration', category: '02 / SYSTEMS' },
+  { icon: Globe, title: 'Web Building', detail: 'Simple ideas turned into useful digital spaces', category: '03 / CREATE' },
+  { icon: Cpu, title: 'Automation & Tools', detail: 'Less repetitive work. More room to think.', category: '04 / SIMPLIFY' },
+  { icon: Sparkles, title: 'AI-Assisted Building', detail: 'A quiet partner in learning and making', category: '05 / EXPLORE' },
+  { icon: Shield, title: 'Ethical Hacking', detail: 'A beginner’s curiosity about security & privacy', category: '06 / DISCOVER' },
+  { icon: Monitor, title: 'Windows Systems', detail: 'Office workflows, tools & hands-on problem solving', category: '07 / WORKFLOW' },
 ];
 
-const projects = [
-  {
-    title: "Tax Invoice Extractor",
-    description:
-      "A tool I built at the office to pull text from documents and images, turning slow manual work into a few quick clicks.",
-    tags: ["Python", "Automation", "AI"],
-    href: "https://extractor.akbuilts.com",
-  },
-  {
-    title: "Cheque Printing Format",
-    description:
-      "A custom cheque layout generator built to streamline payment processing and reduce errors at work.",
-    tags: ["Windows", "Office Tools", "Automation"],
-    href: "#contact",
-  },
-  {
-    title: "akbuilts.com",
-    description:
-      "This site — a quiet corner of the internet to share who I am, what I learn, and what I build behind the scenes.",
-    tags: ["React", "Tailwind", "TanStack"],
-    href: "https://akbuilts.com",
-  },
-  {
-    title: "AutoKid",
-    description:
-      "A simple, playful tool to help kids learn vehicle names — built quietly, one idea at a time.",
-    tags: ["Education", "Web Tool", "Kids"],
-    href: "https://autokid.akbuilts.com",
-  },
-];
+function Reveal({ children, className = '' }: { children: ReactNode; className?: string }) {
+  const ref = useRef<HTMLDivElement>(null);
+  useEffect(() => {
+    const element = ref.current;
+    if (!element) return;
+    const observer = new IntersectionObserver(([entry]) => {
+      if (entry?.isIntersecting) { element.classList.add('is-visible'); observer.unobserve(element); }
+    }, { threshold: 0.08 });
+    observer.observe(element);
+    return () => observer.disconnect();
+  }, []);
+  return <div ref={ref} className={`reveal ${className}`}>{children}</div>;
+}
 
 function Index() {
-  return (
-    <div className="min-h-screen bg-background text-foreground">
-      <Header />
-      <main>
-        <Hero />
-        <About />
-        <Skills />
-        <Projects />
-        <Contact />
-      </main>
-      <Footer />
-    </div>
-  );
+  return <div className="portfolio"><Header /><main><Hero /><About /><Projects /><Skills /><Contact /></main><Footer /></div>;
 }
 
 function Header() {
-  return (
-    <header className="fixed inset-x-0 top-0 z-50 border-b border-border/50 bg-background/80 backdrop-blur-md">
-      <div className="mx-auto flex h-16 max-w-7xl items-center justify-between px-6">
-        <Link to="/" className="font-heading text-xl font-bold tracking-tight text-foreground">
-          AK<span className="text-primary">.</span>
-        </Link>
-        <nav className="hidden items-center gap-8 md:flex">
-          {navLinks.map((link) => (
-            <a
-              key={link.href}
-              href={link.href}
-              className="text-sm font-medium text-muted-foreground transition-colors hover:text-foreground"
-            >
-              {link.label}
-            </a>
-          ))}
-        </nav>
-        <a
-          href="#contact"
-          className="hidden items-center gap-2 rounded-full bg-primary px-5 py-2 text-sm font-semibold text-primary-foreground transition-all hover:bg-primary/90 hover:shadow-lg hover:shadow-primary/25 md:inline-flex"
-        >
-          Say Hello <ArrowRight className="h-4 w-4" />
-        </a>
-      </div>
-    </header>
-  );
+  const [open, setOpen] = useState(false);
+  return <header className="site-header">
+    <div className="page-width header-inner">
+      <a href="#" aria-label="akbuilts home" className="wordmark">akbuilts<span className="text-primary">.</span><span className="wordmark-sub">BY AJMAL KHAN</span></a>
+      <nav aria-label="Main navigation" className="desktop-nav">{navigation.map(([label, href]) => <a key={href} href={href}>{label}</a>)}</nav>
+      <Button asChild variant="outline" className="header-contact"><a href="mailto:ajmalshajahan@gmail.com">Let’s talk <ArrowUpRight /></a></Button>
+      <Button variant="ghost" size="icon" className="mobile-toggle" aria-label={open ? 'Close menu' : 'Open menu'} aria-expanded={open} onClick={() => setOpen(!open)}>{open ? <X /> : <Menu />}</Button>
+    </div>
+    {open && <nav className="mobile-nav" aria-label="Mobile navigation">{navigation.map(([label, href]) => <a key={href} href={href} onClick={() => setOpen(false)}>{label}<ArrowUpRight size={20} /></a>)}</nav>}
+  </header>;
 }
 
 function Hero() {
-  return (
-    <section className="relative flex min-h-screen items-center overflow-hidden pt-16">
-      {/* Background effects */}
-      <div className="pointer-events-none absolute inset-0 overflow-hidden">
-        <div className="absolute -right-40 top-1/4 h-[500px] w-[500px] rounded-full bg-primary/20 blur-[120px]" />
-        <div className="absolute -left-20 bottom-1/4 h-[400px] w-[400px] rounded-full bg-indigo-mid/30 blur-[100px]" />
-        <div
-          className="absolute inset-0 opacity-[0.03]"
-          style={{
-            backgroundImage:
-              "linear-gradient(rgba(255,255,255,0.1) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.1) 1px, transparent 1px)",
-            backgroundSize: "60px 60px",
-          }}
-        />
+  return <section className="hero" aria-labelledby="hero-title">
+    <div className="hero-portrait"><img src="/ajmal-profile.jpg" alt="Ajmal Khan, with a world of numbers and code" width={1024} height={1024} fetchPriority="high" /><div className="portrait-shade" /></div>
+    <div className="page-width hero-inner">
+      <div className="hero-topline"><span className="status-dot" /><span>A CURIOUS MIND. ALWAYS IN PROGRESS.</span></div>
+      <div className="hero-copy"><p className="hero-intro">Accountant by day. Builder by curiosity.</p>
+        <h1 id="hero-title">Ajmal<br /><span>Khan<span className="text-primary">.</span></span></h1>
+        <p className="hero-description">Behind the numbers,<br />there’s a lot more to the story.</p>
+        <div className="hero-actions"><Button asChild size="lg"><a href="#projects">Explore my work <ArrowUpRight /></a></Button><a href="#about" className="text-link">Meet the person <ArrowRight size={17} /></a></div>
       </div>
+      <div className="photo-caption"><span className="caption-cross">+</span><span>NOT JUST AN ACCOUNTANT.<br /><strong>A LEARNER. A BUILDER. ME.</strong></span></div>
+      <div className="hero-bottom"><a href="#about" className="scroll-link"><ArrowDown size={17} /> SCROLL TO DISCOVER</a><span className="location"><MapPin size={14} /> DUBAI, UAE <span className="text-primary">↗</span></span></div>
+    </div>
+  </section>;
+}
 
-      <div className="relative mx-auto w-full max-w-7xl px-6 py-24 lg:py-32">
-        <div className="grid items-center gap-12 lg:grid-cols-2 lg:gap-16">
-          <div className="space-y-8">
-            <div className="animate-fade-in-up inline-flex items-center gap-2 rounded-full border border-border bg-card/50 px-4 py-1.5 text-sm text-muted-foreground backdrop-blur-sm">
-              <Sparkles className="h-4 w-4 text-primary" />
-              <span>Accountant · Learner · Builder</span>
-            </div>
-            <h1 className="animate-fade-in-up animation-delay-100 font-heading text-5xl font-bold leading-[1.1] tracking-tight sm:text-6xl lg:text-7xl">
-              Hi, I'm <span className="text-gradient">Ajmal Khan</span>
-            </h1>
-            <p className="animate-fade-in-up animation-delay-200 max-w-xl text-lg leading-relaxed text-muted-foreground sm:text-xl">
-              I spend my days with numbers, and my nights exploring code. I stay behind the scenes —
-              quietly simplifying work with Python, Linux, small tools, and a little help from AI.
-            </p>
-            <div className="animate-fade-in-up animation-delay-300 flex flex-wrap gap-4">
-              <a
-                href="#projects"
-                className="inline-flex items-center gap-2 rounded-full bg-primary px-6 py-3 text-base font-semibold text-primary-foreground transition-all hover:bg-primary/90 hover:shadow-lg hover:shadow-primary/25"
-              >
-                Explore My Work <ArrowDown className="h-4 w-4" />
-              </a>
-              <a
-                href="#contact"
-                className="inline-flex items-center gap-2 rounded-full border border-border bg-card px-6 py-3 text-base font-semibold text-foreground transition-all hover:border-primary/50 hover:bg-accent"
-              >
-                Say Hello
-              </a>
-            </div>
-          </div>
-
-          <div className="relative hidden lg:block">
-            <div className="relative mx-auto aspect-square max-w-lg">
-              {/* Decorative code card */}
-              <div className="animate-fade-in-up animation-delay-400 absolute -left-8 top-8 rounded-2xl border border-border bg-card/80 p-5 shadow-xl backdrop-blur-sm glow-sm">
-                <div className="flex items-center gap-2">
-                  <div className="h-3 w-3 rounded-full bg-destructive" />
-                  <div className="h-3 w-3 rounded-full bg-yellow-500" />
-                  <div className="h-3 w-3 rounded-full bg-green-500" />
-                </div>
-                <pre className="mt-4 text-xs text-muted-foreground">
-                  <code>{`while (true) {
-  learn();
-  build();
-  improve();
-}`}</code>
-                </pre>
-              </div>
-
-              {/* Decorative stats card */}
-              <div className="animate-fade-in-up animation-delay-500 absolute -right-4 bottom-12 rounded-2xl border border-border bg-card/80 p-5 shadow-xl backdrop-blur-sm glow-sm">
-                <div className="flex items-center gap-3">
-                  <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-primary/20">
-                    <Globe className="h-6 w-6 text-primary" />
-                  </div>
-                  <div>
-                    <p className="font-heading text-2xl font-bold text-foreground">5+</p>
-                    <p className="text-sm text-muted-foreground">Years learning by doing</p>
-                  </div>
-                </div>
-              </div>
-
-              {/* Profile photo */}
-              <div className="absolute inset-0 flex items-center justify-center">
-                <div className="animate-pulse-glow h-72 w-72 rounded-full bg-primary/10 blur-3xl" />
-              </div>
-              <div className="absolute inset-0 flex items-center justify-center">
-                <div className="animate-float relative h-56 w-56 overflow-hidden rounded-full border-2 border-border bg-card/90 p-2 shadow-2xl glow">
-                  <img
-                    src="/ajmal-profile.jpg"
-                    alt="Ajmal Khan"
-                    className="h-full w-full rounded-full object-cover"
-                  />
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </section>
-  );
+function SectionLabel({ number, children }: { number: string; children: ReactNode }) {
+  return <div className="section-label"><span className="text-primary">{number}</span><span>{children}</span><Plus size={15} /></div>;
 }
 
 function About() {
-  return (
-    <section id="about" className="relative overflow-hidden py-24 lg:py-32">
-      {/* Accountant ledger texture */}
-      <div className="pointer-events-none absolute inset-0 ledger-lines opacity-50" />
-      <div className="pointer-events-none absolute inset-y-0 left-0 w-px bg-gradient-to-b from-transparent via-primary/30 to-transparent" />
-
-      <div className="relative mx-auto max-w-7xl px-6">
-        <div className="grid gap-12 lg:grid-cols-12 lg:gap-16">
-          {/* Left: narrative */}
-          <div className="animate-fade-in-up lg:col-span-7">
-            <p className="text-sm font-semibold uppercase tracking-widest text-primary">About Me</p>
-            <h2 className="mt-4 font-heading text-3xl font-bold leading-tight tracking-tight text-foreground sm:text-4xl lg:text-5xl">
-              If you came here looking for just an Accountant… you may not fully find me.
-            </h2>
-            <div className="mt-10 space-y-6 text-lg leading-relaxed text-muted-foreground">
-              <p>
-                Yes, I have spent five years working as an Accountant in Dubai. Numbers, reports,
-                and responsibilities — I know them well.
-              </p>
-              <p>But this page is not about my profession. This is about me. The inner me.</p>
-              <p>
-                I am a learner in a world that never stops changing. I watch, I absorb, I recreate —
-                and sometimes, I improve. Some may call it copying. I call it evolving.
-              </p>
-              <p>
-                In a time where technology shifts every day, I believe the real skill is not in
-                knowing one thing deeply, but in being willing to learn anything quickly.
-              </p>
-              <p>
-                I have touched many worlds — Python, Linux, Windows, Ubuntu, a little ethical
-                hacking, building websites, and creating small tools that make work lighter.
-              </p>
-              <p>
-                I do not enjoy the noise of social media. I do not wish to live in front of cameras
-                or create videos. I prefer to stay behind the scenes — quietly simplifying,
-                improving, and building.
-              </p>
-              <p className="text-foreground">
-                This is not a professional profile. This is simply me… still learning, still
-                adapting, still becoming.
-              </p>
-            </div>
-          </div>
-
-          {/* Right: accountant identity card */}
-          <div className="animate-fade-in-up animation-delay-200 lg:col-span-5">
-            <div className="sticky top-28 space-y-6">
-              <div className="rounded-2xl border border-border bg-card/80 p-6 shadow-xl backdrop-blur-sm glow-sm sm:p-8">
-                <div className="flex items-center gap-3">
-                  <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-primary/10">
-                    <FileText className="h-5 w-5 text-primary" />
-                  </div>
-                  <p className="text-sm font-semibold uppercase tracking-widest text-primary">
-                    From the Books
-                  </p>
-                </div>
-
-                <div className="mt-6 space-y-4">
-                  <div className="flex items-center justify-between border-b border-border/60 pb-3">
-                    <span className="text-sm text-muted-foreground">Role</span>
-                    <span className="font-medium text-foreground">Accountant</span>
-                  </div>
-                  <div className="flex items-center justify-between border-b border-border/60 pb-3">
-                    <span className="text-sm text-muted-foreground">Experience</span>
-                    <span className="font-medium text-foreground">5+ Years</span>
-                  </div>
-                  <div className="flex items-center justify-between border-b border-border/60 pb-3">
-                    <span className="text-sm text-muted-foreground">Location</span>
-                    <span className="font-medium text-foreground">Dubai</span>
-                  </div>
-                  <div className="flex items-center justify-between pb-1">
-                    <span className="text-sm text-muted-foreground">Focus</span>
-                    <span className="font-medium text-foreground">Reports & Automation</span>
-                  </div>
-                </div>
-
-                {/* Mini ledger visual */}
-                <div className="mt-8 rounded-xl border border-border bg-background/60 p-4">
-                  <div className="flex items-center justify-between border-b border-border/60 pb-2">
-                    <span className="text-xs font-medium uppercase tracking-wider text-muted-foreground">
-                      Assets
-                    </span>
-                    <span className="text-xs font-medium uppercase tracking-wider text-muted-foreground">
-                      Value
-                    </span>
-                  </div>
-                  <div className="mt-3 space-y-2 text-sm">
-                    <div className="flex items-center justify-between">
-                      <span className="text-muted-foreground">Curiosity</span>
-                      <span className="font-medium text-foreground">High</span>
-                    </div>
-                    <div className="flex items-center justify-between">
-                      <span className="text-muted-foreground">Adaptability</span>
-                      <span className="font-medium text-foreground">High</span>
-                    </div>
-                    <div className="flex items-center justify-between">
-                      <span className="text-muted-foreground">Problem Solving</span>
-                      <span className="font-medium text-foreground">Growing</span>
-                    </div>
-                  </div>
-                  <div className="mt-4 flex items-center justify-between border-t border-border/60 pt-3">
-                    <span className="text-sm font-medium text-foreground">Total</span>
-                    <span className="font-heading text-lg font-bold text-primary">Still Becoming</span>
-                  </div>
-                </div>
-
-                <p className="mt-6 text-sm italic leading-relaxed text-muted-foreground">
-                  “Every balance sheet has two sides. On one side: the accountant. On the other:
-                  the curious builder.”
-                </p>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </section>
-  );
+  const [expanded, setExpanded] = useState(false);
+  return <section id="about" className="section about-section"><div className="page-width">
+    <SectionLabel number="01">THE PERSON BEHIND THE NUMBERS</SectionLabel>
+    <div className="about-grid"><Reveal><h2>There’s more<br />than one side<br />to my <span className="text-primary">ledger.</span></h2><p className="about-aside">Accountant by profession.<br />Learner by nature. Builder by choice.</p>
+      <div className="identity-ledger"><div><span>BASED IN</span><strong>Dubai, UAE</strong></div><div><span>EXPERIENCE</span><strong>5 years in accounting</strong></div><div><span>CURRENT BALANCE</span><strong className="text-primary">Still becoming ↗</strong></div></div>
+    </Reveal>
+    <Reveal className="about-story"><p className="story-opening">If you came here looking for just an Accountant… you may not fully find me.</p>
+      <p>Yes, I have spent five years working as an Accountant in Dubai. Numbers, reports, and responsibilities — I know them well.</p>
+      <p>But this page is not about my profession.<br /><span className="text-foreground">This is about me. The inner me.</span></p>
+      <p>I am a learner in a world that never stops changing. I watch, I absorb, I recreate — and sometimes, I improve. Some may call it copying. <span className="text-primary">I call it evolving.</span></p>
+      {expanded && <div id="full-story" className="expanded-story"><p>In a time where technology shifts every day, I believe the real skill is not in knowing one thing deeply, but in being willing to learn anything quickly.</p><p>I have touched many worlds — Python, Linux, Windows, Ubuntu, a little ethical hacking, building websites, and creating small tools that make work lighter.</p><p>I do not enjoy the noise of social media. I do not wish to live in front of cameras or create videos. I prefer to stay behind the scenes — quietly simplifying, improving, and building.</p><p>This is not a professional profile. This is simply me… still learning, still adapting, still becoming.</p></div>}
+      <Button variant="ghost" className="story-toggle" aria-expanded={expanded} aria-controls="full-story" onClick={() => setExpanded(!expanded)}>{expanded ? 'A little less' : 'A little more about me'}{expanded ? <Minus /> : <Plus />}</Button>
+      <div className="story-signature">Quietly learning. Always becoming.<span>— Ajmal</span></div>
+    </Reveal></div>
+  </div></section>;
 }
 
-function Skills() {
-  return (
-    <section id="skills" className="relative border-y border-border/50 bg-card/30 py-24 lg:py-32">
-      <div className="mx-auto max-w-7xl px-6">
-        <div className="animate-fade-in-up mb-16 max-w-2xl">
-          <p className="text-sm font-semibold uppercase tracking-widest text-primary">Skills</p>
-          <h2 className="mt-4 font-heading text-4xl font-bold tracking-tight text-foreground sm:text-5xl">
-            Worlds I have touched.
-          </h2>
-          <p className="mt-4 text-lg text-muted-foreground">
-            Not an expert in any single label — just curious enough to keep learning.
-          </p>
-        </div>
-        <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-          {skills.map((skill, index) => (
-            <div
-              key={skill.title}
-              className="animate-fade-in-up group rounded-2xl border border-border bg-card p-6 transition-all hover:-translate-y-1 hover:border-primary/30 hover:bg-accent hover:shadow-lg hover:shadow-primary/10"
-              style={{ animationDelay: `${(index + 1) * 100}ms` }}
-            >
-              <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-primary/10 transition-colors group-hover:bg-primary/20">
-                <skill.icon className="h-6 w-6 text-primary" />
-              </div>
-              <h3 className="mt-5 font-heading text-xl font-semibold text-foreground">{skill.title}</h3>
-              <p className="mt-2 text-muted-foreground">{skill.description}</p>
-            </div>
-          ))}
-        </div>
-      </div>
-    </section>
-  );
+function InvoicePreview() {
+  return <div className="invoice-preview" aria-hidden="true"><div className="preview-toolbar"><span><FileText size={15} /> invoice.pdf</span><span className="preview-status"><Check size={12} /> Extracted</span></div><div className="invoice-content"><div className="invoice-paper"><span className="mini-label">TAX INVOICE</span><div className="paper-line long" /><div className="paper-line" /><div className="paper-table">{Array.from({length: 4}, (_, i) => <div key={i}><span /><span /><span /></div>)}</div><div className="paper-line short" /></div><div className="extract-arrow"><ArrowRight /></div><div className="invoice-result"><span className="mini-label">STRUCTURED DATA</span><div><span>Document</span><strong>Tax invoice</strong></div><div><span>Fields</span><strong className="text-primary">Identified ✓</strong></div><div><span>Output</span><strong>Ready to use</strong></div><div className="result-footer"><Check size={12} /> Less typing. More doing.</div></div></div></div>;
 }
 
 function Projects() {
-  return (
-    <section id="projects" className="relative py-24 lg:py-32">
-      <div className="mx-auto max-w-7xl px-6">
-        <div className="animate-fade-in-up mb-16 max-w-2xl">
-          <p className="text-sm font-semibold uppercase tracking-widest text-primary">Projects</p>
-          <h2 className="mt-4 font-heading text-4xl font-bold tracking-tight text-foreground sm:text-5xl">
-            Things I built quietly.
-          </h2>
-        </div>
+  return <section id="projects" className="section projects-section"><div className="page-width"><SectionLabel number="02">A FEW THINGS I’VE MADE</SectionLabel>
+    <Reveal className="section-heading"><h2>Small ideas.<br /><span className="text-muted-foreground">Real-world purpose.</span></h2><p>Not built to make noise.<br />Built to make something a little better.</p></Reveal>
+    <div className="project-grid">
+      <Reveal><article className="project"><div className="project-visual invoice-visual"><span className="visual-label">LESS MANUAL WORK. MORE MOMENTUM.</span><InvoicePreview /></div><div className="project-meta"><span>01 / PRODUCTIVITY</span><span>PYTHON · AUTOMATION · AI</span></div><h3>Tax Invoice Extractor</h3><p>A practical tool that pulls text from documents and images, turning repetitive manual work into a few quick clicks.</p><Button asChild variant="link" className="project-link"><a href="https://extractor.akbuilts.com" target="_blank" rel="noopener noreferrer">View Project <ArrowUpRight /></a></Button></article></Reveal>
+      <Reveal><article className="project"><div className="project-visual autokid-visual"><img src={autoKidImage} alt="Playful toy car, bus and scooter for AutoKid vehicle learning" width={1536} height={1024} loading="lazy" /><span className="autokid-label">AutoKid<span>Little minds. Big discoveries.</span></span></div><div className="project-meta"><span>02 / LEARNING & PLAY</span><span>EDUCATION · WEB TOOL</span></div><h3>AutoKid</h3><p>A little world of vehicles for little learners. A playful tool that helps children discover and learn vehicle names.</p><Button asChild variant="link" className="project-link"><a href="https://autokid.akbuilts.com" target="_blank" rel="noopener noreferrer">View Project <ArrowUpRight /></a></Button></article></Reveal>
+    </div>
+    <Reveal className="other-projects"><article><span className="text-primary">03</span><div><h3>Cheque Printing Format</h3><p>Thoughtful cheque layouts. Smoother payment workflows.</p><span className="small-tags">WINDOWS / OFFICE TOOLS / AUTOMATION</span></div><Button asChild variant="ghost" size="icon"><a href="#contact" aria-label="View Project: Cheque Printing Format"><ArrowUpRight /></a></Button></article><article><span className="text-primary">04</span><div><h3>akbuilts.com</h3><p>This quiet corner of the internet. Built to be myself.</p><span className="small-tags">REACT / TAILWIND / TANSTACK</span></div><Button asChild variant="ghost" size="icon"><a href="https://akbuilts.com" target="_blank" rel="noopener noreferrer" aria-label="View Project: akbuilts.com"><ArrowUpRight /></a></Button></article></Reveal>
+  </div></section>;
+}
 
-        <div className="grid gap-8 md:grid-cols-2 lg:grid-cols-3">
-          {projects.map((project, index) => (
-            <article
-              key={project.title}
-              className="animate-fade-in-up group flex flex-col overflow-hidden rounded-2xl border border-border bg-card transition-all hover:-translate-y-1 hover:border-primary/30 hover:shadow-xl hover:shadow-primary/10"
-              style={{ animationDelay: `${(index + 1) * 150}ms` }}
-            >
-              <div className="relative aspect-[16/10] overflow-hidden bg-indigo-deep">
-                <div className="absolute inset-0 bg-gradient-to-br from-primary/20 to-indigo-mid/40" />
-                <div className="absolute inset-0 flex items-center justify-center">
-                  {project.title === "Tax Invoice Extractor" ? (
-                    <FileText className="h-12 w-12 text-primary/40" />
-                  ) : project.title === "Cheque Printing Format" ? (
-                    <Layout className="h-12 w-12 text-primary/40" />
-                  ) : project.title === "AutoKid" ? (
-                    <Car className="h-12 w-12 text-primary/40" />
-                  ) : (
-                    <Globe className="h-12 w-12 text-primary/40" />
-                  )}
-                </div>
-              </div>
-              <div className="flex flex-1 flex-col p-6">
-                <h3 className="font-heading text-xl font-semibold text-foreground">{project.title}</h3>
-                <p className="mt-3 flex-1 text-muted-foreground">{project.description}</p>
-                <div className="mt-5 flex flex-wrap gap-2">
-                  {project.tags.map((tag) => (
-                    <span
-                      key={tag}
-                      className="rounded-full border border-border bg-background px-3 py-1 text-xs font-medium text-muted-foreground"
-                    >
-                      {tag}
-                    </span>
-                  ))}
-                </div>
-                <a
-                  href={project.href}
-                  target={project.href.startsWith("http") ? "_blank" : undefined}
-                  rel={project.href.startsWith("http") ? "noopener noreferrer" : undefined}
-                  className="mt-6 inline-flex w-full items-center justify-center gap-2 rounded-lg border border-border bg-background px-4 py-2.5 text-sm font-semibold text-foreground transition-colors hover:border-primary/50 hover:bg-accent hover:text-foreground"
-                >
-                  View Project <ArrowRight className="h-4 w-4" />
-                </a>
-              </div>
-            </article>
-          ))}
-        </div>
-      </div>
-    </section>
-  );
+function Skills() {
+  return <section id="skills" className="section skills-section"><div className="page-width"><SectionLabel number="03">MY EVER-GROWING TOOLKIT</SectionLabel><Reveal className="section-heading"><h2>Curiosity doesn’t<br />stay in <span className="text-primary">one lane.</span></h2><p>No expert labels. No progress bars.<br />Just worlds I’ve touched and keep exploring.</p></Reveal><div className="skill-grid">{skills.map(skill => <Reveal key={skill.title}><article className="skill-item"><div className="skill-top"><span>{skill.category}</span><skill.icon size={22} /></div><h3>{skill.title}</h3><p>{skill.detail}</p></article></Reveal>)}</div><Reveal className="learning-note"><span className="status-dot" />The most useful skill? Being willing to learn the next one.<ArrowUpRight size={20} /></Reveal></div></section>;
 }
 
 function Contact() {
-  return (
-    <section id="contact" className="relative border-t border-border/50 bg-card/30 py-24 lg:py-32">
-      <div className="mx-auto max-w-7xl px-6">
-        <div className="grid gap-16 lg:grid-cols-2 lg:gap-24">
-          <div className="animate-fade-in-up">
-            <p className="text-sm font-semibold uppercase tracking-widest text-primary">Contact</p>
-            <h2 className="mt-4 font-heading text-4xl font-bold tracking-tight text-foreground sm:text-5xl">
-              Say hello.
-            </h2>
-            <p className="mt-6 max-w-md text-lg text-muted-foreground">
-              I keep my distance from social noise, but email always reaches me. If something here
-              resonated, feel free to write.
-            </p>
-            <div className="mt-8 space-y-4">
-              <a
-                href="mailto:ajmalshajahan@gmail.com"
-                className="flex items-center gap-3 text-muted-foreground transition-colors hover:text-foreground"
-              >
-                <Mail className="h-5 w-5 text-primary" />
-                <span>ajmalshajahan@gmail.com</span>
-              </a>
-            </div>
-          </div>
-
-          <form
-            action="mailto:ajmalshajahan@gmail.com"
-            method="post"
-            encType="text/plain"
-            className="animate-fade-in-up animation-delay-200 space-y-5 rounded-2xl border border-border bg-card p-6 shadow-xl sm:p-8"
-          >
-            <div className="grid gap-5 sm:grid-cols-2">
-              <div className="space-y-2">
-                <label htmlFor="name" className="text-sm font-medium text-foreground">
-                  Name
-                </label>
-                <input
-                  id="name"
-                  name="name"
-                  type="text"
-                  required
-                  placeholder="Your name"
-                  className="w-full rounded-xl border border-input bg-background px-4 py-3 text-sm text-foreground outline-none transition-colors placeholder:text-muted-foreground focus:border-primary focus:ring-2 focus:ring-ring"
-                />
-              </div>
-              <div className="space-y-2">
-                <label htmlFor="email" className="text-sm font-medium text-foreground">
-                  Email
-                </label>
-                <input
-                  id="email"
-                  name="email"
-                  type="email"
-                  required
-                  placeholder="you@example.com"
-                  className="w-full rounded-xl border border-input bg-background px-4 py-3 text-sm text-foreground outline-none transition-colors placeholder:text-muted-foreground focus:border-primary focus:ring-2 focus:ring-ring"
-                />
-              </div>
-            </div>
-            <div className="space-y-2">
-              <label htmlFor="message" className="text-sm font-medium text-foreground">
-                Message
-              </label>
-              <textarea
-                id="message"
-                name="message"
-                rows={5}
-                required
-                placeholder="Tell me what's on your mind..."
-                className="w-full resize-none rounded-xl border border-input bg-background px-4 py-3 text-sm text-foreground outline-none transition-colors placeholder:text-muted-foreground focus:border-primary focus:ring-2 focus:ring-ring"
-              />
-            </div>
-            <button
-              type="submit"
-              className="inline-flex w-full items-center justify-center gap-2 rounded-xl bg-primary px-6 py-3 text-base font-semibold text-primary-foreground transition-all hover:bg-primary/90 hover:shadow-lg hover:shadow-primary/25"
-            >
-              Send Message <ArrowRight className="h-4 w-4" />
-            </button>
-          </form>
-        </div>
-      </div>
-    </section>
-  );
+  const [copied, setCopied] = useState(false);
+  const [copyFailed, setCopyFailed] = useState(false);
+  const [prepared, setPrepared] = useState(false);
+  async function copyEmail() {
+    try { await navigator.clipboard.writeText('ajmalshajahan@gmail.com'); setCopied(true); setCopyFailed(false); window.setTimeout(() => setCopied(false), 2500); }
+    catch { setCopyFailed(true); }
+  }
+  function sendMessage(event: FormEvent<HTMLFormElement>) {
+    event.preventDefault();
+    const data = new FormData(event.currentTarget);
+    const body = `${String(data.get('message'))}\n\nFrom: ${String(data.get('name'))}\nEmail: ${String(data.get('email'))}`;
+    window.location.href = `mailto:ajmalshajahan@gmail.com?subject=${encodeURIComponent(`Hello Ajmal — from ${String(data.get('name'))}`)}&body=${encodeURIComponent(body)}`;
+    setPrepared(true);
+  }
+  return <section id="contact" className="section contact-section"><div className="page-width"><SectionLabel number="04">GOOD CONVERSATIONS START SOMEWHERE</SectionLabel><div className="contact-grid"><Reveal><h2>Have a thought?<br /><span className="text-primary">Say hello.</span><ArrowUpRight className="contact-arrow" /></h2><p className="contact-description">I stay away from the social noise.<br />But a good email? Always welcome.</p><div className="email-row"><a href="mailto:ajmalshajahan@gmail.com">ajmalshajahan@gmail.com</a><Button size="icon" variant="ghost" onClick={copyEmail} aria-label={copied ? 'Email copied' : 'Copy email'} title={copied ? 'Copied' : 'Copy email'}>{copied ? <Check /> : <Copy />}</Button></div><span role="status" className="copy-status">{copied ? 'Email copied.' : copyFailed ? 'Please select and copy the email address above.' : ''}</span><p className="contact-location"><MapPin size={15} /> Dubai, UAE <span> / </span> Open to a good conversation</p></Reveal><Reveal><form onSubmit={sendMessage} className="contact-form"><div className="form-pair"><div><label htmlFor="name">YOUR NAME</label><input id="name" name="name" placeholder="What should I call you?" required autoComplete="name" /></div><div><label htmlFor="email">YOUR EMAIL</label><input id="email" name="email" type="email" placeholder="you@example.com" required autoComplete="email" /></div></div><div><label htmlFor="message">WHAT’S ON YOUR MIND?</label><textarea id="message" name="message" placeholder="An idea, a question, or just a hello…" rows={4} required /></div><Button type="submit" size="lg" className="send-button">Let’s start a conversation <ArrowUpRight /></Button>{prepared && <p role="status" className="form-status">Your message is ready in your email app. Send it there to reach me.</p>}</form></Reveal></div></div></section>;
 }
 
 function Footer() {
-  return (
-    <footer className="border-t border-border/50 py-8">
-      <div className="mx-auto flex max-w-7xl flex-col items-center justify-between gap-4 px-6 sm:flex-row">
-        <p className="text-sm text-muted-foreground">
-          © {new Date().getFullYear()} Ajmal Khan. Built quietly with curiosity.
-        </p>
-        <div className="flex gap-6">
-          {navLinks.map((link) => (
-            <a
-              key={link.href}
-              href={link.href}
-              className="text-sm text-muted-foreground transition-colors hover:text-foreground"
-            >
-              {link.label}
-            </a>
-          ))}
-        </div>
-      </div>
-    </footer>
-  );
+  return <footer className="site-footer"><div className="page-width footer-inner"><a href="#" className="wordmark">akbuilts<span className="text-primary">.</span></a><p>© {new Date().getFullYear()} Ajmal Khan. Built quietly. With curiosity.</p><a href="#" className="back-top">BACK TO TOP <ArrowUpRight size={16} /></a></div></footer>;
 }
