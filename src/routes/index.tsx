@@ -258,7 +258,7 @@ function scrollToId(id: string) {
   document.getElementById(id)?.scrollIntoView({ behavior: "smooth", block: "start" });
 }
 
-/* Roles that roll in and out vertically. */
+/* One role at a time: the current word is re-keyed so it slides in fresh. */
 function RoleRoll() {
   const [i, setI] = useState(0);
   useEffect(() => {
@@ -266,18 +266,11 @@ function RoleRoll() {
     return () => window.clearInterval(id);
   }, []);
   return (
-    <span className="role-roll" aria-label={roles.join(", ")}>
-      {roles.map((r, n) => (
-        <span
-          key={r}
-          aria-hidden="true"
-          className={
-            n === i ? "is-in" : n === (i - 1 + roles.length) % roles.length ? "is-out" : ""
-          }
-        >
-          {r}
-        </span>
-      ))}
+    <span className="role-roll">
+      <span className="sr-only">{roles.join(", ")}</span>
+      <span key={roles[i]} className="role-word" aria-hidden="true">
+        {roles[i]}
+      </span>
     </span>
   );
 }
@@ -375,31 +368,45 @@ function Header() {
 function Hero() {
   return (
     <section className="hero" aria-labelledby="hero-title">
-      <div className="hero-grid">
-        <div className="hero-left">
-          <p className="hero-hello">Hello! I’m</p>
-          <h1 id="hero-title" aria-label="Ajmal Khan">
-            <SplitLetters text="AJMAL" delay={1.7} />
-            <br />
-            <SplitLetters text="KHAN" delay={1.95} />
-          </h1>
+      <div className="hero-inner">
+        <div className="hero-top">
+          <p className="hero-hello">
+            <span className="hero-dot" aria-hidden="true" /> Hello! I’m
+          </p>
+          <p className="hero-place">
+            <MapPin size={14} /> Dubai, UAE
+          </p>
         </div>
-        <div className="hero-portrait">
-          <div className="hero-halo" aria-hidden="true" />
-          <img
-            src="/ajmal-profile.jpg"
-            alt="Ajmal Khan"
-            width={1024}
-            height={1024}
-            fetchPriority="high"
-          />
-        </div>
-        <div className="hero-right">
-          <p className="hero-an">Dubai-based</p>
+        <h1 id="hero-title" className="hero-name" aria-label="Ajmal Khan">
+          <SplitLetters text="AJMAL" delay={1.7} />
+          <span className="hero-photo" aria-hidden="true">
+            <img src="/ajmal-profile.jpg" alt="" width={1024} height={1024} fetchPriority="high" />
+          </span>
+          <SplitLetters text="KHAN" delay={1.95} />
+        </h1>
+        <div className="hero-bottom">
           <p className="hero-role">
+            <span className="hero-role-label">Dubai-based</span>
             <RoleRoll />
           </p>
-          <p className="hero-sub">…and still becoming.</p>
+          <div className="hero-intro">
+            <p>
+              Five years keeping books in Dubai. Quietly learning, building small tools, and still
+              becoming.
+            </p>
+            <div className="hero-actions">
+              <Magnetic>
+                <Button className="violet-btn" onClick={() => scrollToId("work")}>
+                  See my work <ArrowUpRight />
+                </Button>
+              </Magnetic>
+              <Magnetic strength={0.2}>
+                <Button className="ghost-btn" onClick={() => scrollToId("contact")}>
+                  Say hello
+                </Button>
+              </Magnetic>
+            </div>
+          </div>
         </div>
       </div>
       <div className="hero-band">
@@ -414,10 +421,6 @@ function Hero() {
           )}
         </Marquee>
       </div>
-      <button type="button" className="scroll-hint" onClick={() => scrollToId("about")}>
-        <span>Scroll</span>
-        <ChevronDown size={16} />
-      </button>
     </section>
   );
 }
@@ -427,9 +430,12 @@ function About() {
     <section id="about" className="section about">
       <div className="page-width about-grid">
         <Reveal className="about-visual">
-          <Tilt className="about-photo" max={8}>
-            <img src="/ajmal-profile.jpg" alt="" width={1024} height={1024} loading="lazy" />
-            <span className="about-photo-glow" aria-hidden="true" />
+          <Tilt className="about-quote" max={6}>
+            <span className="about-quote-mark" aria-hidden="true">
+              “
+            </span>
+            <p>Some may call it copying. I call it evolving.</p>
+            <span className="about-quote-by">— Ajmal</span>
           </Tilt>
         </Reveal>
         <div className="about-text">
