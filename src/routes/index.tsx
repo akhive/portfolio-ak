@@ -1,6 +1,6 @@
 import { createFileRoute } from '@tanstack/react-router';
 import { useEffect, useRef, useState, type CSSProperties, type ReactNode, type FormEvent } from 'react';
-import { ArrowUpRight, ArrowDown, ArrowRight, Menu, X, Plus, Minus, Terminal, Globe, Cpu, Shield, Monitor, Sparkles, FileText, Check, Copy, Mail, MapPin, Calculator, FileSpreadsheet, Building2, KeyRound, Home, Clock, TrendingUp, Landmark, Zap, Blocks, Command, ScanText } from 'lucide-react';
+import { ArrowUpRight, ArrowDown, ArrowRight, Menu, X, Plus, Minus, Terminal, Globe, Cpu, Shield, Monitor, Sparkles, FileText, Check, Copy, Mail, MapPin, Calculator, FileSpreadsheet, Building2, KeyRound, Home, Clock, TrendingUp, Landmark, Zap, Blocks, Command, ScanText, Printer } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import autoKidImage from '@/assets/autokid-vehicles.jpg';
 
@@ -69,6 +69,17 @@ function Index() {
   return <div className="portfolio"><Header /><main><Hero /><Ticker /><Stats /><About /><Projects /><Skills /><Contact /></main><Footer /></div>;
 }
 
+function DubaiClock() {
+  const [time, setTime] = useState('');
+  useEffect(() => {
+    const format = () => new Intl.DateTimeFormat('en-GB', { hour: '2-digit', minute: '2-digit', hour12: false, timeZone: 'Asia/Dubai' }).format(new Date());
+    setTime(format());
+    const id = window.setInterval(() => setTime(format()), 30000);
+    return () => window.clearInterval(id);
+  }, []);
+  return <span>{time}</span>;
+}
+
 function Header() {
   const [open, setOpen] = useState(false);
   return <header className="site-header">
@@ -76,7 +87,7 @@ function Header() {
       <a href="#" aria-label="akbuilts home" className="wordmark">akbuilts<span className="text-primary">.</span><span className="wordmark-sub">BY AJMAL KHAN</span></a>
       <nav aria-label="Main navigation" className="desktop-nav">{navigation.map(([label, href]) => <a key={href} href={href}>{label}</a>)}</nav>
       <div className="header-side">
-        <span className="header-clock"><Clock size={13} /> DUBAI <span id="dubai-time" /></span>
+        <span className="header-clock"><Clock size={13} /> DUBAI <DubaiClock /></span>
         <Button asChild variant="outline" className="header-contact"><a href="mailto:ajmalshajahan@gmail.com">Let’s talk <ArrowUpRight /></a></Button>
       </div>
       <Button variant="ghost" size="icon" className="mobile-toggle" aria-label={open ? 'Close menu' : 'Open menu'} aria-expanded={open} onClick={() => setOpen(!open)}>{open ? <X /> : <Menu />}</Button>
@@ -164,12 +175,8 @@ function Projects() {
       <Reveal><article className="project"><div className="project-visual app-visual"><span className="visual-label">BOOKS THAT BALANCE THEMSELVES.</span><FinoraPreview /></div><div className="project-meta"><span><Calculator size={11} /> 03 / ACCOUNTING SOFTWARE</span><span>LEDGERS · VAT · INVOICES · REPORTS</span></div><h3>Finora</h3><p>Accounting software for the everyday books — sales, purchases, VAT and reports, kept tidy without the late evenings.</p><Button asChild variant="link" className="project-link"><a href="https://finora.akbuilts.com" target="_blank" rel="noopener noreferrer">View Project <ArrowUpRight /></a></Button></article></Reveal>
       <Reveal><article className="project"><div className="project-visual estate-visual"><span className="visual-label">ONE BOOK FOR EVERY UNIT.</span><AqarPreview /></div><div className="project-meta"><span><Building2 size={11} /> 04 / REAL ESTATE SOFTWARE</span><span>PROPERTY · RENT · TENANTS · CHEQUES</span></div><h3>AqarBooks</h3><p>Real estate software that keeps units, tenants, rent and cheques in one quiet register — nothing slips through the month.</p><Button asChild variant="link" className="project-link"><a href="https://aqarbooks.akbuilts.com" target="_blank" rel="noopener noreferrer">View Project <ArrowUpRight /></a></Button></article></Reveal>
     </div>
-    <Reveal className="other-projects"><article><span className="text-primary">05</span><div><h3>Cheque Printing Format</h3><p>Thoughtful cheque layouts. Smoother payment workflows.</p><span className="small-tags"><PrinterIcon /> WINDOWS / OFFICE TOOLS / AUTOMATION</span></div><Button asChild variant="ghost" size="icon"><a href="#contact" aria-label="View Project: Cheque Printing Format"><ArrowUpRight /></a></Button></article><article><span className="text-primary">06</span><div><h3>akbuilts.com</h3><p>This quiet corner of the internet. Built to be myself.</p><span className="small-tags"><Globe size={9} /> REACT / TAILWIND / TANSTACK</span></div><Button asChild variant="ghost" size="icon"><a href="https://akbuilts.com" target="_blank" rel="noopener noreferrer" aria-label="View Project: akbuilts.com"><ArrowUpRight /></a></Button></article></Reveal>
+    <Reveal className="other-projects"><article><span className="text-primary">05</span><div><h3>Cheque Printing Format</h3><p>Thoughtful cheque layouts. Smoother payment workflows.</p><span className="small-tags"><Printer size={9} /> WINDOWS / OFFICE TOOLS / AUTOMATION</span></div><Button asChild variant="ghost" size="icon"><a href="#contact" aria-label="View Project: Cheque Printing Format"><ArrowUpRight /></a></Button></article><article><span className="text-primary">06</span><div><h3>akbuilts.com</h3><p>This quiet corner of the internet. Built to be myself.</p><span className="small-tags"><Globe size={9} /> REACT / TAILWIND / TANSTACK</span></div><Button asChild variant="ghost" size="icon"><a href="https://akbuilts.com" target="_blank" rel="noopener noreferrer" aria-label="View Project: akbuilts.com"><ArrowUpRight /></a></Button></article></Reveal>
   </div></section>;
-}
-
-function PrinterIcon() {
-  return <span className="tag-dot" aria-hidden="true" />;
 }
 
 function Skills() {
