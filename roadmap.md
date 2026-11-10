@@ -13,3 +13,9 @@
 - [x] Add motion: floating ledger-glyph field reacting to the pointer, letter-by-letter name, typed taglines, magnetic CTAs, spinning portrait ring, printer tape sway.
 - [x] Add a scroll-speed project ticker, counting numbers strip, word-by-word headings, tilt cards, scroll progress, active nav dot, paper-plane send.
 - [x] Reduced-motion users get a still, readable page with fades only.
+
+# Portfolio redesign (midnight violet)
+- [x] Make the site a personal portfolio first: hero, about, what I do, journey, toolkit, contact.
+- [x] Keep the project demo links in a "My Work" section (pinned horizontal scroll on desktop).
+- [x] New theme: near-black with violet glow, Geist type, intro loader, glow cursor, rolling roles, interactive skill bubbles.
+- [x] Reduced-motion visitors skip the loader and get a still page.

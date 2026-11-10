@@ -44,222 +44,6 @@ function useInView<T extends Element>(threshold = 0.15) {
   return [ref, seen] as const;
 }
 
-/* ── Floating ledger glyphs: a canvas of numbers and symbols drifting
-      upward, pushed aside by the pointer and linked when close. ── */
-const GLYPHS = [
-  "0",
-  "1",
-  "2",
-  "3",
-  "5",
-  "7",
-  "9",
-  "+",
-  "−",
-  "=",
-  "%",
-  "∑",
-  "Dr",
-  "Cr",
-  "AED",
-  "÷",
-  "×",
-  "{ }",
-  "</>",
-  "$_",
-];
-
-type Particle = {
-  x: number;
-  y: number;
-  vx: number;
-  vy: number;
-  z: number;
-  r: number;
-  spin: number;
-  g: string;
-  hot: number;
-};
-
-export function GlyphField({ className = "" }: { className?: string }) {
-  const canvasRef = useRef<HTMLCanvasElement>(null);
-  const reduced = useReducedMotion();
-
-  useEffect(() => {
-    const canvas = canvasRef.current;
-    const ctx = canvas?.getContext("2d");
-    if (!canvas || !ctx) return;
-
-    const css = getComputedStyle(document.documentElement);
-    let dpr = Math.min(window.devicePixelRatio || 1, 2);
-    let w = 0;
-    let h = 0;
-    let parts: Particle[] = [];
-    const mouse = { x: -9999, y: -9999, active: false };
-    let raf = 0;
-    let visible = true;
-
-    const make = (anyY = true): Particle => ({
-      x: Math.random() * w,
-      y: anyY ? Math.random() * h : h + 30,
-      vx: (Math.random() - 0.5) * 0.15,
-      vy: -(0.15 + Math.random() * 0.45),
-      z: 0.35 + Math.random() * 0.9,
-      r: Math.random() * Math.PI * 2,
-      spin: (Math.random() - 0.5) * 0.01,
-      g: GLYPHS[Math.floor(Math.random() * GLYPHS.length)]!,
-      hot: 0,
-    });
-
-    const resize = () => {
-      const rect = canvas.getBoundingClientRect();
-      w = rect.width;
-      h = rect.height;
-      dpr = Math.min(window.devicePixelRatio || 1, 2);
-      canvas.width = Math.round(w * dpr);
-      canvas.height = Math.round(h * dpr);
-      ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
-      const count = Math.round(Math.min(90, Math.max(28, (w * h) / 16000)));
-      parts = Array.from({ length: count }, () => make(true));
-    };
-
-    const draw = (step: boolean) => {
-      const primary = css.getPropertyValue("--primary").trim() || "#f0544f";
-      const fg = css.getPropertyValue("--muted-foreground").trim() || "#97a7bd";
-      ctx.clearRect(0, 0, w, h);
-
-      // links between near neighbours
-      ctx.lineWidth = 1;
-      for (let i = 0; i < parts.length; i++) {
-        const a = parts[i]!;
-        for (let j = i + 1; j < parts.length; j++) {
-          const b = parts[j]!;
-          const dx = a.x - b.x;
-          const dy = a.y - b.y;
-          const d2 = dx * dx + dy * dy;
-          if (d2 < 120 * 120) {
-            const alpha = (1 - Math.sqrt(d2) / 120) * 0.12 * Math.min(a.z, b.z);
-            ctx.strokeStyle = fg;
-            ctx.globalAlpha = alpha;
-            ctx.beginPath();
-            ctx.moveTo(a.x, a.y);
-            ctx.lineTo(b.x, b.y);
-            ctx.stroke();
-          }
-        }
-      }
-
-      for (const p of parts) {
-        if (step) {
-          if (mouse.active) {
-            const dx = p.x - mouse.x;
-            const dy = p.y - mouse.y;
-            const d = Math.hypot(dx, dy);
-            if (d < 150 && d > 0.01) {
-              const f = (1 - d / 150) * 1.4;
-              p.vx += (dx / d) * f * 0.35;
-              p.vy += (dy / d) * f * 0.35;
-              p.hot = 1;
-            }
-          }
-          p.vx *= 0.96;
-          p.vy = p.vy * 0.96 + -(0.2 * p.z) * 0.04;
-          p.x += p.vx * p.z;
-          p.y += p.vy * p.z;
-          p.r += p.spin;
-          p.hot *= 0.97;
-          if (p.y < -40 || p.x < -60 || p.x > w + 60) Object.assign(p, make(false));
-        }
-        const size = 11 + p.z * 13;
-        ctx.save();
-        ctx.translate(p.x, p.y);
-        ctx.rotate(Math.sin(p.r) * 0.35);
-        ctx.font = `500 ${size}px "IBM Plex Mono", ui-monospace, monospace`;
-        ctx.textAlign = "center";
-        ctx.textBaseline = "middle";
-        ctx.globalAlpha = 0.1 + p.z * 0.16 + p.hot * 0.5;
-        ctx.fillStyle = p.hot > 0.15 ? primary : fg;
-        ctx.fillText(p.g, 0, 0);
-        ctx.restore();
-      }
-      ctx.globalAlpha = 1;
-    };
-
-    const loop = () => {
-      if (visible && !document.hidden) draw(true);
-      raf = requestAnimationFrame(loop);
-    };
-
-    const onMove = (e: PointerEvent) => {
-      const rect = canvas.getBoundingClientRect();
-      mouse.x = e.clientX - rect.left;
-      mouse.y = e.clientY - rect.top;
-      mouse.active = mouse.y > -50 && mouse.y < h + 50;
-    };
-    const onLeave = () => {
-      mouse.active = false;
-    };
-
-    resize();
-    const ro = new ResizeObserver(resize);
-    ro.observe(canvas);
-    const io = new IntersectionObserver(([e]) => {
-      visible = !!e?.isIntersecting;
-    });
-    io.observe(canvas);
-
-    if (reduced) {
-      draw(false);
-    } else {
-      window.addEventListener("pointermove", onMove, { passive: true });
-      document.addEventListener("pointerleave", onLeave);
-      raf = requestAnimationFrame(loop);
-    }
-    return () => {
-      cancelAnimationFrame(raf);
-      ro.disconnect();
-      io.disconnect();
-      window.removeEventListener("pointermove", onMove);
-      document.removeEventListener("pointerleave", onLeave);
-    };
-  }, [reduced]);
-
-  return <canvas ref={canvasRef} className={`glyph-field ${className}`} aria-hidden="true" />;
-}
-
-/* ── Soft glow that trails the pointer across the page (fine pointers only). ── */
-export function Spotlight() {
-  const ref = useRef<HTMLDivElement>(null);
-  const reduced = useReducedMotion();
-  useEffect(() => {
-    const el = ref.current;
-    if (!el || reduced || !window.matchMedia("(pointer: fine)").matches) return;
-    let tx = window.innerWidth / 2;
-    let ty = window.innerHeight / 3;
-    let x = tx;
-    let y = ty;
-    let raf = 0;
-    const onMove = (e: PointerEvent) => {
-      tx = e.clientX;
-      ty = e.clientY;
-      el.style.opacity = "1";
-    };
-    const tick = () => {
-      x += (tx - x) * 0.12;
-      y += (ty - y) * 0.12;
-      el.style.transform = `translate3d(${x}px, ${y}px, 0)`;
-      raf = requestAnimationFrame(tick);
-    };
-    window.addEventListener("pointermove", onMove, { passive: true });
-    raf = requestAnimationFrame(tick);
-    return () => {
-      cancelAnimationFrame(raf);
-      window.removeEventListener("pointermove", onMove);
-    };
-  }, [reduced]);
-  return <div ref={ref} className="spotlight" aria-hidden="true" />;
-}
-
 /* ── Reading progress line under the header. ── */
 export function ScrollProgress() {
   const ref = useRef<HTMLDivElement>(null);
@@ -599,4 +383,280 @@ export function useActiveSection(ids: readonly string[]) {
     return () => io.disconnect();
   }, [ids]);
   return active;
+}
+
+/* ── Paragraph whose words ink in one by one as it scrolls through the view. ── */
+export function ScrollInk({ text, className = "" }: { text: string; className?: string }) {
+  const ref = useRef<HTMLParagraphElement>(null);
+  const reduced = useReducedMotion();
+  const words = text.split(" ");
+  useEffect(() => {
+    const el = ref.current;
+    if (!el) return;
+    const spans = Array.from(el.querySelectorAll<HTMLSpanElement>(".ink-word"));
+    if (reduced) {
+      spans.forEach((s) => s.classList.add("is-inked"));
+      return;
+    }
+    let raf = 0;
+    const update = () => {
+      raf = 0;
+      const rect = el.getBoundingClientRect();
+      const vh = window.innerHeight;
+      const progress = Math.min(1, Math.max(0, (vh * 0.85 - rect.top) / (rect.height + vh * 0.35)));
+      const count = Math.round(progress * spans.length);
+      spans.forEach((s, i) => s.classList.toggle("is-inked", i < count));
+    };
+    const onScroll = () => {
+      if (!raf) raf = requestAnimationFrame(update);
+    };
+    update();
+    window.addEventListener("scroll", onScroll, { passive: true });
+    window.addEventListener("resize", onScroll);
+    return () => {
+      window.removeEventListener("scroll", onScroll);
+      window.removeEventListener("resize", onScroll);
+      cancelAnimationFrame(raf);
+    };
+  }, [reduced, text]);
+  return (
+    <p ref={ref} className={`scroll-ink ${className}`}>
+      {words.map((w, i) => (
+        <Fragment key={i}>
+          <span className="ink-word">{w}</span>
+          {i < words.length - 1 ? " " : null}
+        </Fragment>
+      ))}
+    </p>
+  );
+}
+
+/* ── Exposes how far an element has scrolled through the view as --p (0 → 1). ── */
+export function ScrollProgressVar({
+  children,
+  className = "",
+}: {
+  children: ReactNode;
+  className?: string;
+}) {
+  const ref = useRef<HTMLDivElement>(null);
+  useEffect(() => {
+    const el = ref.current;
+    if (!el) return;
+    let raf = 0;
+    const update = () => {
+      raf = 0;
+      const rect = el.getBoundingClientRect();
+      const vh = window.innerHeight;
+      const p = Math.min(1, Math.max(0, (vh * 0.6 - rect.top) / rect.height));
+      el.style.setProperty("--p", p.toFixed(4));
+    };
+    const onScroll = () => {
+      if (!raf) raf = requestAnimationFrame(update);
+    };
+    update();
+    window.addEventListener("scroll", onScroll, { passive: true });
+    window.addEventListener("resize", onScroll);
+    return () => {
+      window.removeEventListener("scroll", onScroll);
+      window.removeEventListener("resize", onScroll);
+      cancelAnimationFrame(raf);
+    };
+  }, []);
+  return (
+    <div ref={ref} className={className}>
+      {children}
+    </div>
+  );
+}
+
+/* ── Custom cursor: a dot plus a trailing ring that grows over links (fine pointers only). ── */
+export function Cursor() {
+  const dotRef = useRef<HTMLDivElement>(null);
+  const ringRef = useRef<HTMLDivElement>(null);
+  const reduced = useReducedMotion();
+  useEffect(() => {
+    const dot = dotRef.current;
+    const ring = ringRef.current;
+    if (!dot || !ring || reduced || !window.matchMedia("(pointer: fine)").matches) return;
+    document.documentElement.classList.add("has-cursor");
+    let tx = -100;
+    let ty = -100;
+    let x = tx;
+    let y = ty;
+    let raf = 0;
+    const onMove = (e: PointerEvent) => {
+      tx = e.clientX;
+      ty = e.clientY;
+      dot.style.transform = `translate3d(${tx}px, ${ty}px, 0)`;
+      const target = e.target as Element | null;
+      const hot = target?.closest("a, button, [role='tab'], input, textarea, label, .cursor-grow");
+      ring.classList.toggle("is-hot", !!hot);
+      dot.classList.add("is-on");
+      ring.classList.add("is-on");
+    };
+    const onDown = () => ring.classList.add("is-down");
+    const onUp = () => ring.classList.remove("is-down");
+    const onLeave = () => {
+      dot.classList.remove("is-on");
+      ring.classList.remove("is-on");
+    };
+    const tick = () => {
+      x += (tx - x) * 0.18;
+      y += (ty - y) * 0.18;
+      ring.style.transform = `translate3d(${x}px, ${y}px, 0)`;
+      raf = requestAnimationFrame(tick);
+    };
+    window.addEventListener("pointermove", onMove, { passive: true });
+    window.addEventListener("pointerdown", onDown);
+    window.addEventListener("pointerup", onUp);
+    document.addEventListener("pointerleave", onLeave);
+    raf = requestAnimationFrame(tick);
+    return () => {
+      cancelAnimationFrame(raf);
+      document.documentElement.classList.remove("has-cursor");
+      window.removeEventListener("pointermove", onMove);
+      window.removeEventListener("pointerdown", onDown);
+      window.removeEventListener("pointerup", onUp);
+      document.removeEventListener("pointerleave", onLeave);
+    };
+  }, [reduced]);
+  return (
+    <>
+      <div ref={ringRef} className="cursor-ring" aria-hidden="true" />
+      <div ref={dotRef} className="cursor-dot" aria-hidden="true" />
+    </>
+  );
+}
+
+/* ── Brief intro loader: a counting pill over a marquee of roles. Skippable, and
+      skipped entirely for reduced motion, so it never blocks reading for long. ── */
+export function Loader({ words }: { words: string[] }) {
+  const [pct, setPct] = useState(0);
+  const [done, setDone] = useState(false);
+  const [gone, setGone] = useState(false);
+  useEffect(() => {
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+      setGone(true);
+      return;
+    }
+    document.documentElement.classList.add("is-loading");
+    let raf = 0;
+    const start = performance.now();
+    const total = 1500;
+    const tick = (now: number) => {
+      const t = Math.min(1, (now - start) / total);
+      setPct(Math.round(100 * (1 - Math.pow(1 - t, 2))));
+      if (t < 1) raf = requestAnimationFrame(tick);
+      else setDone(true);
+    };
+    raf = requestAnimationFrame(tick);
+    return () => {
+      cancelAnimationFrame(raf);
+      document.documentElement.classList.remove("is-loading");
+    };
+  }, []);
+  useEffect(() => {
+    if (!done) return;
+    document.documentElement.classList.remove("is-loading");
+    const id = window.setTimeout(() => setGone(true), 900);
+    return () => window.clearTimeout(id);
+  }, [done]);
+  if (gone) return null;
+  return (
+    <div
+      className={`loader ${done ? "is-done" : ""}`}
+      aria-hidden="true"
+      onClick={() => setDone(true)}
+    >
+      <div className="loader-marquee">
+        <div className="loader-track">
+          {[0, 1].map((k) => (
+            <span key={k}>
+              {words.map((w) => (
+                <Fragment key={w}>
+                  {w}
+                  <i>•</i>
+                </Fragment>
+              ))}
+            </span>
+          ))}
+        </div>
+      </div>
+      <div className="loader-pill">
+        <span>Loading</span>
+        <b>{pct}%</b>
+      </div>
+    </div>
+  );
+}
+
+/* ── Pins a section and turns vertical scroll into horizontal travel of its track. ── */
+export function HorizontalPin({ children, label }: { children: ReactNode; label: string }) {
+  const outerRef = useRef<HTMLDivElement>(null);
+  const trackRef = useRef<HTMLDivElement>(null);
+  const reduced = useReducedMotion();
+  const [height, setHeight] = useState<number | null>(null);
+  useEffect(() => {
+    const outer = outerRef.current;
+    const track = trackRef.current;
+    if (!outer || !track) return;
+    const wide = window.matchMedia("(min-width: 861px)");
+    let distance = 0;
+    let raf = 0;
+    const measure = () => {
+      if (reduced || !wide.matches) {
+        setHeight(null);
+        track.style.transform = "";
+        distance = 0;
+        return;
+      }
+      distance = Math.max(0, track.scrollWidth - window.innerWidth);
+      setHeight(distance + window.innerHeight);
+    };
+    const update = () => {
+      raf = 0;
+      if (!distance) return;
+      const top = outer.getBoundingClientRect().top;
+      const p = Math.min(1, Math.max(0, -top / distance));
+      track.style.transform = `translate3d(${-p * distance}px, 0, 0)`;
+      outer.style.setProperty("--hp", p.toFixed(4));
+    };
+    const onScroll = () => {
+      if (!raf) raf = requestAnimationFrame(update);
+    };
+    measure();
+    update();
+    const ro = new ResizeObserver(() => {
+      measure();
+      update();
+    });
+    ro.observe(track);
+    window.addEventListener("resize", measure);
+    window.addEventListener("scroll", onScroll, { passive: true });
+    wide.addEventListener("change", measure);
+    return () => {
+      ro.disconnect();
+      window.removeEventListener("resize", measure);
+      window.removeEventListener("scroll", onScroll);
+      wide.removeEventListener("change", measure);
+      cancelAnimationFrame(raf);
+    };
+  }, [reduced]);
+  return (
+    <div
+      ref={outerRef}
+      className={`hpin ${height ? "is-pinned" : ""}`}
+      style={height ? { height } : undefined}
+    >
+      <div className="hpin-sticky">
+        <div ref={trackRef} className="hpin-track" role="list" aria-label={label}>
+          {children}
+        </div>
+        <div className="hpin-bar" aria-hidden="true">
+          <span />
+        </div>
+      </div>
+    </div>
+  );
 }
