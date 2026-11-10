@@ -36,7 +36,7 @@
   --primary: oklch(0.88 0.2 125);
   --primary-foreground: oklch(0.17 0.03 130);
   --secondary: oklch(0.22 0.009 145);
-  --muted-foreground: oklch(0.64 0.007 135);
+  --muted-foreground: oklch(0.7 0.012 135);
   --accent: oklch(0.26 0.014 145);
   --border: oklch(0.3 0.01 145);
   --destructive: oklch(0.66 0.19 25);
@@ -45,7 +45,7 @@
   --preview-ink: oklch(0.3 0.018 150);
   --preview-line: oklch(0.76 0.008 140);
   --play-background: oklch(0.955 0.025 160);
-  --warm-accent: oklch(0.76 0.12 55);
+  --warm-accent: oklch(0.8 0.11 62);
   --app-background: oklch(0.225 0.022 172);
   --app-panel: oklch(0.165 0.012 168);
   --estate-background: oklch(0.9 0.042 82);
@@ -301,7 +301,8 @@ h2 { font-size:52px; line-height:1.13; font-weight:500; }
   .hero,.hero-inner { min-height:100svh; }
   .hero-inner { padding-top:109px; }
   .hero-portrait { top:90px; bottom:auto; height:440px; width:90%; right:-28%; }
-  .hero-portrait img { object-position:42% 30%; opacity:.65; }
+  .hero-portrait img { object-position:42% 30%; opacity:.55; }
+  .portrait-shade { background:linear-gradient(90deg, var(--background) 0%, color-mix(in oklab,var(--background) 82%,transparent) 52%, transparent 100%), linear-gradient(0deg, var(--background) 0%, transparent 42%); }
   .hero::after { width:320px; height:320px; top:6%; right:-12%; }
   .hero-topline { font-size:8px; }
   .hero-copy { padding-top:44px; max-width:none; }
