@@ -139,64 +139,76 @@ export function MyMoneyDemo() {
     cat: c,
     total: items.filter((e) => e.cat === c).reduce((s, e) => s + e.amount, 0),
   }));
+  const max = Math.max(...byCat.map((b) => b.total), 1);
 
-  function add(e: FormEvent) {
-    e.preventDefault();
-    const n = parseFloat(amount);
-    if (!n || n <= 0) return;
-    setItems((list) => [...list, { id: Date.now(), note: "Custom", cat, amount: n }]);
+  function add(e: Omit<Expense, "id">) {
+    setItems((list) => [{ ...e, id: Date.now() }, ...list]);
+  }
+  function submit(event: FormEvent<HTMLFormElement>) {
+    event.preventDefault();
+    const value = Number(amount);
+    if (!value || value <= 0) return;
+    add({ note: cat, cat, amount: Math.round(value * 100) / 100 });
     setAmount("");
   }
 
   return (
-    <div className="demo demo-mymoney">
-      <div className="money-bar">
+    <div className="demo demo-money">
+      <div className="money-summary">
         <div>
-          <span>Spent</span>
+          <span>Spent this month</span>
           <strong>AED {aed(spent)}</strong>
         </div>
         <div>
-          <span>Left of AED {aed(MONTHLY_BUDGET)}</span>
-          <strong className={left < 0 ? "is-over" : ""}>AED {aed(left)}</strong>
+          <span>Left of {aed(MONTHLY_BUDGET)} budget</span>
+          <strong className={left < 0 ? "is-over" : "is-left"}>AED {aed(left)}</strong>
         </div>
       </div>
-      <div className="money-cats">
-        {byCat.map((c) => (
-          <div key={c.cat}>
-            <span>{c.cat}</span>
-            <b>AED {aed(c.total)}</b>
+      <div className="money-meter" aria-hidden="true">
+        <i style={{ "--w": `${Math.min(spent / MONTHLY_BUDGET, 1) * 100}%` } as CSSProperties} />
+      </div>
+      <div className="money-bars">
+        {byCat.map((b) => (
+          <div key={b.cat} className="money-bar">
+            <span>{b.cat}</span>
+            <i style={{ "--w": `${(b.total / max) * 100}%` } as CSSProperties} />
+            <strong>{aed(b.total)}</strong>
           </div>
         ))}
       </div>
-      <div className="demo-actions">
-        {quickAdds.map((q) => (
-          <button
-            key={q.note}
-            type="button"
-            className="demo-chip"
-            onClick={() => setItems((list) => [...list, { ...q, id: Date.now() }])}
-          >
-            <Plus size={14} /> {q.note} · {q.amount}
-          </button>
-        ))}
-      </div>
-      <form className="money-form" onSubmit={add}>
-        <select value={cat} onChange={(e) => setCat(e.target.value as Cat)}>
-          {moneyCats.map((c) => (
-            <option key={c}>{c}</option>
-          ))}
-        </select>
+      <form className="money-form" onSubmit={submit}>
+        <label className="sr-only" htmlFor="mm-amount">
+          Amount in AED
+        </label>
         <input
-          type="number"
+          id="mm-amount"
           inputMode="decimal"
+          type="number"
+          min="0"
+          step="0.01"
           placeholder="Amount"
           value={amount}
           onChange={(e) => setAmount(e.target.value)}
         />
+        <label className="sr-only" htmlFor="mm-cat">
+          Category
+        </label>
+        <select id="mm-cat" value={cat} onChange={(e) => setCat(e.target.value as Cat)}>
+          {moneyCats.map((c) => (
+            <option key={c}>{c}</option>
+          ))}
+        </select>
         <Button type="submit" size="sm">
-          Add
+          Add expense
         </Button>
       </form>
+      <div className="demo-actions" role="group" aria-label="Quick add">
+        {quickAdds.map((q) => (
+          <button key={q.note} type="button" className="demo-chip" onClick={() => add(q)}>
+            <Plus size={14} /> {q.note} · {q.amount}
+          </button>
+        ))}
+      </div>
       <button type="button" className="demo-reset" onClick={() => setItems(seedExpenses)}>
         <RotateCcw size={13} /> Reset
       </button>
@@ -204,211 +216,243 @@ export function MyMoneyDemo() {
   );
 }
 
-/* ───────────────────────── AqarBooks: mark a cheque cleared ───────────────────────── */
+/* ───────────────────────── AqarBooks: mark rent received ───────────────────────── */
 
-type Cheque = { id: string; tenant: string; unit: string; amount: number; status: "pending" | "cleared" };
-
-const seedCheques: Cheque[] = [
-  { id: "1", tenant: "Sara Al Maktoum", unit: "A-1204", amount: 18500, status: "pending" },
-  { id: "2", tenant: "Omar Hassan", unit: "B-305", amount: 12000, status: "cleared" },
-  { id: "3", tenant: "Priya Nair", unit: "C-802", amount: 21000, status: "pending" },
+const seedUnits = [
+  { unit: "A-101", rent: 4200, paid: true },
+  { unit: "B-204", rent: 3600, paid: false },
+  { unit: "C-307", rent: 5100, paid: true },
+  { unit: "D-410", rent: 3900, paid: false },
 ];
 
 export function AqarDemo() {
-  const [cheques, setCheques] = useState(seedCheques);
-  const pending = cheques.filter((c) => c.status === "pending").reduce((s, c) => s + c.amount, 0);
-  const cleared = cheques.filter((c) => c.status === "cleared").reduce((s, c) => s + c.amount, 0);
-
+  const [units, setUnits] = useState(seedUnits);
+  const expected = units.reduce((s, u) => s + u.rent, 0);
+  const collected = units.filter((u) => u.paid).reduce((s, u) => s + u.rent, 0);
   return (
     <div className="demo demo-aqar">
-      <div className="aqar-totals">
-        <div>
-          <span>Pending collections</span>
-          <strong>AED {aed(pending)}</strong>
-        </div>
-        <div>
-          <span>Cleared this month</span>
-          <strong>AED {aed(cleared)}</strong>
-        </div>
-      </div>
-      <ul className="aqar-list">
-        {cheques.map((c) => (
-          <li key={c.id} className={c.status === "cleared" ? "is-cleared" : ""}>
-            <div>
-              <b>{c.tenant}</b>
-              <span>
-                {c.unit} · AED {aed(c.amount)}
+      <p className="demo-hint">Tap a unit to mark its rent cheque as cleared.</p>
+      <ul className="aqar-units">
+        {units.map((u, i) => (
+          <li key={u.unit}>
+            <button
+              type="button"
+              aria-pressed={u.paid}
+              onClick={() =>
+                setUnits((list) => list.map((x, j) => (j === i ? { ...x, paid: !x.paid } : x)))
+              }
+            >
+              <span className="aqar-unit">
+                <Home size={14} /> {u.unit}
               </span>
-            </div>
-            {c.status === "pending" ? (
-              <button
-                type="button"
-                className="demo-chip"
-                onClick={() =>
-                  setCheques((list) =>
-                    list.map((x) => (x.id === c.id ? { ...x, status: "cleared" } : x)),
-                  )
-                }
-              >
-                Mark cleared
-              </button>
-            ) : (
-              <span className="aqar-badge">
-                <Check size={12} /> Cleared
+              <span className="aqar-rent">AED {aed(u.rent)}</span>
+              <span className={`aqar-chip ${u.paid ? "is-paid" : "is-due"}`}>
+                {u.paid ? <Check size={12} /> : <Clock size={12} />}
+                {u.paid ? "Cleared" : "Due"}
               </span>
-            )}
+            </button>
           </li>
         ))}
       </ul>
-      <button type="button" className="demo-reset" onClick={() => setCheques(seedCheques)}>
-        <RotateCcw size={13} /> Reset
-      </button>
+      <div className="aqar-total">
+        <span>Collected this month</span>
+        <strong>
+          AED {aed(collected)} <small>of {aed(expected)}</small>
+        </strong>
+        <div className="money-meter" aria-hidden="true">
+          <i style={{ "--w": `${(collected / expected) * 100}%` } as CSSProperties} />
+        </div>
+      </div>
     </div>
   );
 }
 
-/* ───────────────────────── Tax Invoice Extractor ───────────────────────── */
+/* ───────────────────────── Tax Invoice Extractor: scan a sample invoice ───────────────────────── */
+
+const invoiceFields = [
+  ["Supplier", "Al Noor Trading LLC"],
+  ["TRN", "100 2345 6789 0003"],
+  ["Invoice no.", "INV-2026-0418"],
+  ["Date", "04 Nov 2026"],
+  ["Subtotal", "AED 8,400.00"],
+  ["VAT 5%", "AED 420.00"],
+  ["Total", "AED 8,820.00"],
+] as const;
 
 export function ExtractorDemo() {
-  const [done, setDone] = useState(false);
+  const [found, setFound] = useState(0);
+  const [running, setRunning] = useState(false);
+  useEffect(() => {
+    if (!running) return;
+    if (found >= invoiceFields.length) {
+      setRunning(false);
+      return;
+    }
+    const id = window.setTimeout(() => setFound((n) => n + 1), 260);
+    return () => window.clearTimeout(id);
+  }, [running, found]);
   return (
-    <div className="demo demo-extractor">
-      <div className={`extractor-card ${done ? "is-done" : ""}`}>
-        <div className="extractor-icon">
-          <ScanText size={22} />
-        </div>
-        <div>
-          <b>Sample tax invoice.pdf</b>
-          <span>Supplier · TRN · Totals · VAT</span>
-        </div>
-        {!done ? (
-          <Button size="sm" onClick={() => setDone(true)}>
-            Extract
-          </Button>
-        ) : (
-          <span className="extractor-ok">
-            <Check size={14} /> Extracted
-          </span>
-        )}
+    <div className="demo demo-extract">
+      <div className={`extract-paper ${running ? "is-scanning" : ""}`} aria-hidden="true">
+        <span className="paper-title">
+          <FileText size={14} /> Tax invoice
+        </span>
+        {Array.from({ length: 7 }, (_, i) => (
+          <i
+            key={i}
+            className={`paper-line ${i < found ? "is-read" : ""}`}
+            style={{ "--len": `${55 + ((i * 37) % 40)}%` } as CSSProperties}
+          />
+        ))}
+        <span className="scan-beam" />
       </div>
-      {done && (
-        <dl className="extractor-result">
-          <div>
-            <dt>Supplier</dt>
-            <dd>Gulf Trading LLC</dd>
-          </div>
-          <div>
-            <dt>TRN</dt>
-            <dd>100234567890003</dd>
-          </div>
-          <div>
-            <dt>Invoice total</dt>
-            <dd>AED 12,600.00</dd>
-          </div>
-          <div>
-            <dt>VAT (5%)</dt>
-            <dd>AED 600.00</dd>
-          </div>
+      <div className="extract-out">
+        <dl>
+          {invoiceFields.map(([k, v], i) => (
+            <div key={k} className={i < found ? "is-found" : ""}>
+              <dt>{k}</dt>
+              <dd>{i < found ? v : "—"}</dd>
+            </div>
+          ))}
         </dl>
-      )}
-      <button type="button" className="demo-reset" onClick={() => setDone(false)}>
-        <RotateCcw size={13} /> Reset
-      </button>
+        <Button
+          size="sm"
+          onClick={() => {
+            setFound(0);
+            setRunning(true);
+          }}
+          disabled={running}
+        >
+          <ScanText /> {found === invoiceFields.length ? "Extract again" : "Extract fields"}
+        </Button>
+      </div>
     </div>
   );
 }
 
-/* ───────────────────────── AutoKid ───────────────────────── */
+/* ───────────────────────── AutoKid: hear the vehicle names ───────────────────────── */
 
-const vehicles = [
-  { name: "Bus", sound: "Bus!" },
-  { name: "Taxi", sound: "Taxi!" },
-  { name: "Truck", sound: "Truck!" },
-  { name: "Ambulance", sound: "Ambulance!" },
-];
+const vehicles = ["Car", "Bus", "Scooter"];
 
 export function AutoKidDemo() {
-  const [spoken, setSpoken] = useState<string | null>(null);
+  const [word, setWord] = useState("Car");
+  const [canSpeak, setCanSpeak] = useState(false);
+  useEffect(() => {
+    setCanSpeak(typeof window !== "undefined" && "speechSynthesis" in window);
+  }, []);
+  function say(w: string) {
+    setWord(w);
+    if (!canSpeak) return;
+    window.speechSynthesis.cancel();
+    const u = new SpeechSynthesisUtterance(w);
+    u.rate = 0.85;
+    u.pitch = 1.2;
+    window.speechSynthesis.speak(u);
+  }
   return (
     <div className="demo demo-autokid">
-      <img src={autoKidImage} alt="Colourful vehicles for children" className="autokid-img" />
-      <div className="autokid-grid">
-        {vehicles.map((v) => (
-          <button
-            key={v.name}
-            type="button"
-            className={`autokid-btn ${spoken === v.name ? "is-active" : ""}`}
-            onClick={() => setSpoken(v.name)}
-          >
-            <Volume2 size={16} />
-            {v.name}
-          </button>
-        ))}
-      </div>
-      {spoken && (
-        <p className="autokid-say" aria-live="polite">
-          “{spoken}!”
+      <img
+        src={autoKidImage}
+        alt="Toy car, bus and scooter from AutoKid"
+        width={1536}
+        height={1024}
+        loading="lazy"
+      />
+      <div className="autokid-panel">
+        <strong key={word} className="autokid-word">
+          {word}
+        </strong>
+        <div className="demo-actions" role="group" aria-label="Vehicle names">
+          {vehicles.map((v) => (
+            <button
+              key={v}
+              type="button"
+              className={`demo-chip ${v === word ? "is-active" : ""}`}
+              onClick={() => say(v)}
+            >
+              {canSpeak && <Volume2 size={14} />} {v}
+            </button>
+          ))}
+        </div>
+        <p className="demo-hint">
+          {canSpeak
+            ? "Tap a name to hear it, the way a child would in the app."
+            : "Tap a name to see it, the way a child would in the app."}
         </p>
-      )}
+      </div>
     </div>
   );
 }
 
-/* ───────────────────────── Cheque Printing Format ───────────────────────── */
+/* ───────────────────────── Cheque printing: amount in words ───────────────────────── */
 
-function amountInWords(n: number): string {
-  if (!n || n < 0) return "Zero only";
-  const ones = [
-    "",
-    "One",
-    "Two",
-    "Three",
-    "Four",
-    "Five",
-    "Six",
-    "Seven",
-    "Eight",
-    "Nine",
-    "Ten",
-    "Eleven",
-    "Twelve",
-    "Thirteen",
-    "Fourteen",
-    "Fifteen",
-    "Sixteen",
-    "Seventeen",
-    "Eighteen",
-    "Nineteen",
+const ones = [
+  "",
+  "one",
+  "two",
+  "three",
+  "four",
+  "five",
+  "six",
+  "seven",
+  "eight",
+  "nine",
+  "ten",
+  "eleven",
+  "twelve",
+  "thirteen",
+  "fourteen",
+  "fifteen",
+  "sixteen",
+  "seventeen",
+  "eighteen",
+  "nineteen",
+];
+const tens = ["", "", "twenty", "thirty", "forty", "fifty", "sixty", "seventy", "eighty", "ninety"];
+function below1000(n: number): string {
+  const h = Math.floor(n / 100),
+    r = n % 100;
+  const rest = r < 20 ? ones[r] : `${tens[Math.floor(r / 10)]}${r % 10 ? "-" + ones[r % 10] : ""}`;
+  return [h ? `${ones[h]} hundred` : "", rest].filter(Boolean).join(" and ");
+}
+function toWords(n: number): string {
+  if (n === 0) return "zero";
+  const parts: string[] = [];
+  const scales: [number, string][] = [
+    [1e9, "billion"],
+    [1e6, "million"],
+    [1e3, "thousand"],
   ];
-  const tens = ["", "", "Twenty", "Thirty", "Forty", "Fifty", "Sixty", "Seventy", "Eighty", "Ninety"];
-  const toWords = (num: number): string => {
-    if (num < 20) return ones[num] ?? "";
-    if (num < 100) return `${tens[Math.floor(num / 10)]} ${ones[num % 10]}`.trim();
-    if (num < 1000)
-      return `${ones[Math.floor(num / 100)]} Hundred${num % 100 ? ` and ${toWords(num % 100)}` : ""}`;
-    if (num < 1000000) {
-      const th = Math.floor(num / 1000);
-      return `${toWords(th)} Thousand${num % 1000 ? ` ${toWords(num % 1000)}` : ""}`;
+  for (const [size, name] of scales) {
+    if (n >= size) {
+      parts.push(`${below1000(Math.floor(n / size))} ${name}`);
+      n %= size;
     }
-    return aed(num);
-  };
-  const whole = Math.floor(n);
-  const fils = Math.round((n - whole) * 100);
-  let words = toWords(whole) + " Dirhams";
-  if (fils) words += ` and ${toWords(fils)} Fils`;
-  return words + " only";
+  }
+  if (n) parts.push(below1000(n));
+  return parts.join(" ");
+}
+function amountInWords(value: number) {
+  const dirhams = Math.floor(value);
+  const fils = Math.round((value - dirhams) * 100);
+  const text = `${toWords(dirhams)} dirham${dirhams === 1 ? "" : "s"}${fils ? ` and ${toWords(fils)} fils` : ""} only`;
+  return text.charAt(0).toUpperCase() + text.slice(1);
 }
 
 export function ChequeDemo() {
-  const [payee, setPayee] = useState("Gulf Trading LLC");
-  const [amount, setAmount] = useState("12500.00");
-  const value = parseFloat(amount) || 0;
-  const date = new Intl.DateTimeFormat("en-GB", {
-    day: "2-digit",
-    month: "short",
-    year: "numeric",
-  }).format(new Date());
-
+  const [payee, setPayee] = useState("Al Noor Trading LLC");
+  const [amount, setAmount] = useState("12500.50");
+  const value = Math.min(Math.max(Number(amount) || 0, 0), 999999999);
+  const date = useMemo(
+    () =>
+      new Intl.DateTimeFormat("en-GB", {
+        day: "2-digit",
+        month: "2-digit",
+        year: "numeric",
+        timeZone: "Asia/Dubai",
+      }).format(new Date()),
+    [],
+  );
   return (
     <div className="demo demo-cheque">
       <div className="cheque" aria-live="polite">
