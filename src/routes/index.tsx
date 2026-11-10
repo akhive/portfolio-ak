@@ -4,6 +4,7 @@ import {
   useRef,
   useState,
   type ComponentType,
+  type CSSProperties,
   type FormEvent,
   type KeyboardEvent,
   type ReactNode,
@@ -35,6 +36,7 @@ import {
   Shield,
   FileSpreadsheet,
   Landmark,
+  Send,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
@@ -54,6 +56,20 @@ import {
   MyMoneyDemo,
   SiteDemo,
 } from "@/components/portfolio/demos";
+import {
+  CountUp,
+  GlyphField,
+  Magnetic,
+  Marquee,
+  Parallax,
+  ScrollProgress,
+  SplitLetters,
+  SplitWords,
+  Spotlight,
+  Tilt,
+  TypeWords,
+  useActiveSection,
+} from "@/components/portfolio/motion";
 
 const EMAIL = "ajmalshajahan@gmail.com";
 
@@ -230,10 +246,19 @@ const sections = [
   ["Toolkit", "toolkit"],
   ["Contact", "contact"],
 ] as const;
+const sectionIds = sections.map(([, id]) => id);
 
 /* ───────────────────────── Shared bits ───────────────────────── */
 
-function Reveal({ children, className = "" }: { children: ReactNode; className?: string }) {
+function Reveal({
+  children,
+  className = "",
+  delay = 0,
+}: {
+  children: ReactNode;
+  className?: string;
+  delay?: number;
+}) {
   const ref = useRef<HTMLDivElement>(null);
   useEffect(() => {
     const el = ref.current;
@@ -251,7 +276,11 @@ function Reveal({ children, className = "" }: { children: ReactNode; className?:
     return () => io.disconnect();
   }, []);
   return (
-    <div ref={ref} className={`reveal ${className}`}>
+    <div
+      ref={ref}
+      className={`reveal ${className}`}
+      style={delay ? ({ transitionDelay: `${delay}s` } as CSSProperties) : undefined}
+    >
       {children}
     </div>
   );
@@ -302,12 +331,15 @@ function Index() {
 
   return (
     <div className="portfolio">
+      <Spotlight />
       <a href="#main" className="skip-link">
         Skip to content
       </a>
       <Header onSearch={() => setPaletteOpen(true)} />
       <main id="main">
         <Hero onProject={openProject} />
+        <Ticker />
+        <Numbers />
         <About />
         <Work active={active} setActive={setActive} />
         <Toolkit />
@@ -322,6 +354,7 @@ function Index() {
 function Header({ onSearch }: { onSearch: () => void }) {
   const [open, setOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
+  const current = useActiveSection(sectionIds);
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 12);
     onScroll();
@@ -336,7 +369,12 @@ function Header({ onSearch }: { onSearch: () => void }) {
         </a>
         <nav aria-label="Main" className="desktop-nav">
           {sections.map(([label, id]) => (
-            <a key={id} href={`#${id}`}>
+            <a
+              key={id}
+              href={`#${id}`}
+              className={current === id ? "is-current" : ""}
+              aria-current={current === id ? "location" : undefined}
+            >
               {label}
             </a>
           ))}
@@ -367,6 +405,7 @@ function Header({ onSearch }: { onSearch: () => void }) {
           </Button>
         </div>
       </div>
+      <ScrollProgress />
       {open && (
         <nav className="mobile-nav" aria-label="Mobile">
           {sections.map(([label, id]) => (
@@ -387,37 +426,69 @@ function Hero({ onProject }: { onProject: (id: string) => void }) {
     setAdded((list) => (list.includes(label) ? list.filter((l) => l !== label) : [...list, label]));
   return (
     <section className="hero" aria-labelledby="hero-title">
+      <GlyphField />
+      <div className="hero-orb hero-orb-a" aria-hidden="true" />
+      <div className="hero-orb hero-orb-b" aria-hidden="true" />
       <div className="page-width hero-grid">
         <div className="hero-copy">
           <p className="hero-kicker">
             <span className="live-dot" /> Accountant by day. Builder by curiosity.
           </p>
-          <h1 id="hero-title">
-            Ajmal
+          <h1 id="hero-title" aria-label="Ajmal Khan">
+            <SplitLetters text="Ajmal" delay={0.1} />
             <br />
-            Khan
+            <SplitLetters text="Khan" delay={0.45} />
           </h1>
+          <p className="hero-builds">
+            I build tools for{" "}
+            <TypeWords
+              words={[
+                "accounting.",
+                "VAT returns.",
+                "real estate.",
+                "personal finance.",
+                "little learners.",
+                "lighter workdays.",
+              ]}
+            />
+          </p>
           <p className="hero-lede">
             Five years keeping books in Dubai taught me where the work gets slow. So I build the
             tools that make it lighter — accounting, personal finance, real estate, and the small
             things in between.
           </p>
           <div className="hero-actions">
-            <Button size="lg" onClick={() => scrollToId("work")}>
-              Try the live demos
-            </Button>
-            <Button size="lg" variant="outline" onClick={() => onProject("mymoney")}>
-              <Wallet /> New: MyMoney
-            </Button>
+            <Magnetic>
+              <Button size="lg" className="cta-shine" onClick={() => scrollToId("work")}>
+                Try the live demos <ArrowUpRight />
+              </Button>
+            </Magnetic>
+            <Magnetic strength={0.2}>
+              <Button size="lg" variant="outline" onClick={() => onProject("mymoney")}>
+                <Wallet /> New: MyMoney
+              </Button>
+            </Magnetic>
           </div>
           <div className="hero-portrait">
-            <img
-              src="/ajmal-profile.jpg"
-              alt="Ajmal Khan"
-              width={1024}
-              height={1024}
-              fetchPriority="high"
-            />
+            <span className="portrait-wrap">
+              <span className="portrait-ring" aria-hidden="true">
+                <svg viewBox="0 0 100 100">
+                  <defs>
+                    <path id="ring-path" d="M50,50 m-41,0 a41,41 0 1,1 82,0 a41,41 0 1,1 -82,0" />
+                  </defs>
+                  <text>
+                    <textPath href="#ring-path">accountant • learner • builder • dubai •</textPath>
+                  </text>
+                </svg>
+              </span>
+              <img
+                src="/ajmal-profile.jpg"
+                alt="Ajmal Khan"
+                width={1024}
+                height={1024}
+                fetchPriority="high"
+              />
+            </span>
             <p>
               Not just an accountant.
               <br />
@@ -426,9 +497,13 @@ function Hero({ onProject }: { onProject: (id: string) => void }) {
           </div>
         </div>
 
-        <div className="tape-wrap">
+        <Parallax className="tape-wrap" speed={0.06}>
+          <div className="printer" aria-hidden="true">
+            <span className="printer-light" />
+            <span className="printer-slot" />
+          </div>
           <div
-            className="tape"
+            className={`tape ${added.length ? "is-feeding" : ""}`}
             role="log"
             aria-label="A running tape of who I am"
             aria-live="polite"
@@ -468,12 +543,13 @@ function Hero({ onProject }: { onProject: (id: string) => void }) {
           </div>
           <div className="tape-keys">
             <p>Add to the tape — the worlds I’ve wandered into:</p>
-            <div className="keys">
-              {worlds.map((w) => (
+            <div className={`keys ${added.length ? "" : "is-idle"}`}>
+              {worlds.map((w, i) => (
                 <button
                   key={w.label}
                   type="button"
                   className="key"
+                  style={{ "--i": i } as CSSProperties}
                   aria-pressed={added.includes(w.label)}
                   onClick={() => toggle(w.label)}
                 >
@@ -482,7 +558,57 @@ function Hero({ onProject }: { onProject: (id: string) => void }) {
               ))}
             </div>
           </div>
-        </div>
+        </Parallax>
+      </div>
+      <a href="#about" className="scroll-cue" aria-label="Scroll to About">
+        <span />
+      </a>
+    </section>
+  );
+}
+
+function Ticker() {
+  return (
+    <div className="ticker" aria-label="Projects and worlds">
+      <Marquee label="Projects" speed={45}>
+        {projects.map((p) => (
+          <span key={p.id} className="ticker-item">
+            <p.icon size={22} /> {p.name}
+            <i aria-hidden="true">✦</i>
+          </span>
+        ))}
+      </Marquee>
+      <Marquee label="Worlds" speed={30} reverse>
+        {worlds.map((w) => (
+          <span key={w.label} className="ticker-item is-small">
+            <w.icon size={16} /> {w.label}
+            <i aria-hidden="true">•</i>
+          </span>
+        ))}
+      </Marquee>
+    </div>
+  );
+}
+
+const numbers = [
+  { to: 5, suffix: "", label: "years keeping books in Dubai" },
+  { to: projects.length, suffix: "", label: "tools & products built" },
+  { to: 8, suffix: "+", label: "worlds wandered into" },
+  { to: 0, suffix: "", label: "hours on social media" },
+];
+
+function Numbers() {
+  return (
+    <section className="numbers" aria-label="By the numbers">
+      <div className="page-width numbers-grid">
+        {numbers.map((n, i) => (
+          <Reveal key={n.label} className="number-cell" delay={i * 0.1}>
+            <strong>
+              <CountUp to={n.to} suffix={n.suffix} />
+            </strong>
+            <span>{n.label}</span>
+          </Reveal>
+        ))}
       </div>
     </section>
   );
@@ -494,7 +620,7 @@ function About() {
     <section id="about" className="section about">
       <div className="page-width about-grid">
         <Reveal className="about-title">
-          <h2>There’s more than one side to my ledger.</h2>
+          <SplitWords text="There’s more than one side to my ledger." />
           <dl className="about-facts">
             <div>
               <dt>
@@ -591,7 +717,7 @@ function Work({ active, setActive }: { active: string; setActive: (id: string) =
     <section id="work" className="section work">
       <div className="page-width">
         <Reveal className="section-head">
-          <h2>Things I’ve made. Go ahead, use them.</h2>
+          <SplitWords text="Things I’ve made. Go ahead, use them." />
           <p>
             Every project below has a working demo. Pick one, click around, then open the real
             thing.
@@ -628,46 +754,48 @@ function Work({ active, setActive }: { active: string; setActive: (id: string) =
               </button>
             ))}
           </div>
-          <article
-            id="bench-panel"
-            role="tabpanel"
-            aria-labelledby={`tab-${project.id}`}
-            className="bench-panel"
-            key={project.id}
-          >
-            <header className="panel-head">
-              <div>
-                <p className="panel-kind">{project.kind}</p>
-                <h3>{project.name}</h3>
+          <Tilt className="bench-tilt" max={2.5}>
+            <article
+              id="bench-panel"
+              role="tabpanel"
+              aria-labelledby={`tab-${project.id}`}
+              className="bench-panel"
+              key={project.id}
+            >
+              <header className="panel-head">
+                <div>
+                  <p className="panel-kind">{project.kind}</p>
+                  <h3>{project.name}</h3>
+                </div>
+                {project.href && project.id !== "akbuilts" ? (
+                  <Button asChild>
+                    <a href={project.href} target="_blank" rel="noopener noreferrer">
+                      {project.linkLabel}
+                      <ArrowUpRight />
+                    </a>
+                  </Button>
+                ) : project.id === "cheque" ? (
+                  <Button variant="outline" onClick={() => scrollToId("contact")}>
+                    Ask me about it
+                  </Button>
+                ) : null}
+              </header>
+              <p className="panel-summary">{project.summary}</p>
+              <ul className="panel-stack" aria-label="Built with">
+                {project.stack.map((s) => (
+                  <li key={s}>{s}</li>
+                ))}
+              </ul>
+              <div className="panel-demo">
+                <project.demo />
               </div>
-              {project.href && project.id !== "akbuilts" ? (
-                <Button asChild>
-                  <a href={project.href} target="_blank" rel="noopener noreferrer">
-                    {project.linkLabel}
-                    <ArrowUpRight />
-                  </a>
-                </Button>
-              ) : project.id === "cheque" ? (
-                <Button variant="outline" onClick={() => scrollToId("contact")}>
-                  Ask me about it
-                </Button>
-              ) : null}
-            </header>
-            <p className="panel-summary">{project.summary}</p>
-            <ul className="panel-stack" aria-label="Built with">
-              {project.stack.map((s) => (
-                <li key={s}>{s}</li>
-              ))}
-            </ul>
-            <div className="panel-demo">
-              <project.demo />
-            </div>
-            {project.href && project.id !== "akbuilts" && (
-              <p className="panel-url">
-                <Globe size={13} /> {project.href.replace("https://", "")}
-              </p>
-            )}
-          </article>
+              {project.href && project.id !== "akbuilts" && (
+                <p className="panel-url">
+                  <Globe size={13} /> {project.href.replace("https://", "")}
+                </p>
+              )}
+            </article>
+          </Tilt>
         </div>
       </div>
     </section>
@@ -679,23 +807,28 @@ function Toolkit() {
     <section id="toolkit" className="section toolkit">
       <div className="page-width">
         <Reveal className="section-head">
-          <h2>Curiosity doesn’t stay in one lane.</h2>
+          <SplitWords text="Curiosity doesn’t stay in one lane." />
           <p>
             No expert labels, no progress bars. Just the worlds I’ve touched and keep exploring.
           </p>
         </Reveal>
         <div className="toolkit-grid">
-          {toolkit.map((g) => (
-            <Reveal key={g.group} className="toolkit-col">
-              <h3>{g.group}</h3>
-              <ul>
-                {g.items.map(([name, detail]) => (
-                  <li key={name}>
-                    <b>{name}</b>
-                    <span>{detail}</span>
-                  </li>
-                ))}
-              </ul>
+          {toolkit.map((g, gi) => (
+            <Reveal key={g.group} className="toolkit-col-wrap" delay={gi * 0.12}>
+              <Tilt className="toolkit-col" max={8}>
+                <span className="toolkit-num" aria-hidden="true">
+                  0{gi + 1}
+                </span>
+                <h3>{g.group}</h3>
+                <ul>
+                  {g.items.map(([name, detail]) => (
+                    <li key={name}>
+                      <b>{name}</b>
+                      <span>{detail}</span>
+                    </li>
+                  ))}
+                </ul>
+              </Tilt>
             </Reveal>
           ))}
         </div>
@@ -709,6 +842,7 @@ function Contact() {
   const [copied, setCopied] = useState(false);
   const [copyFailed, setCopyFailed] = useState(false);
   const [prepared, setPrepared] = useState(false);
+  const [flying, setFlying] = useState(false);
   async function copyEmail() {
     try {
       await navigator.clipboard.writeText(EMAIL);
@@ -724,6 +858,8 @@ function Contact() {
     const data = new FormData(event.currentTarget);
     const name = String(data.get("name"));
     const body = `${String(data.get("message"))}\n\nFrom: ${name}\nEmail: ${String(data.get("email"))}`;
+    setFlying(true);
+    window.setTimeout(() => setFlying(false), 1400);
     window.location.href = `mailto:${EMAIL}?subject=${encodeURIComponent(`Hello Ajmal — from ${name}`)}&body=${encodeURIComponent(body)}`;
     setPrepared(true);
   }
@@ -731,7 +867,7 @@ function Contact() {
     <section id="contact" className="section contact">
       <div className="page-width contact-grid">
         <Reveal>
-          <h2>Have a thought? Say hello.</h2>
+          <SplitWords text="Have a thought? Say hello." />
           <p className="contact-lede">
             I stay away from the social noise. But a good email is always welcome, and I usually
             reply within a day.
@@ -791,8 +927,9 @@ function Contact() {
                 required
               />
             </label>
-            <Button type="submit" size="lg">
+            <Button type="submit" size="lg" className="send-btn">
               Write the email
+              <Send className={flying ? "plane is-flying" : "plane"} />
             </Button>
             <p role="status" className="form-status">
               {prepared
